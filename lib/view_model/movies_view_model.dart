@@ -7,7 +7,7 @@ class MoviesViewModel extends ChangeNotifier
 {
 List<MovieItemsModel> _moviesList =[];
 late String _videoId ;
-
+late String _videoURL;
 
 Future<void>getTopMovies() async
 {
@@ -21,9 +21,13 @@ Future<void>getTopMoviesVideoId(index) async
   _videoId = await MoviesApi().getTopMoviesVideoId(index);
   notifyListeners();
 }
-
+Future<void> getTopMoviesVideoUrl(id) async {
+  _videoURL = await MoviesApi().getTopMoviesVideo(id);
+  notifyListeners();
+}
 
   String get videoId => _videoId;
 
   List<MovieItemsModel> get moviesList => _moviesList;
+String get videoURL => _videoURL;
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mvvm_demo/services/api.dart';
+import 'package:mvvm_demo/shared/styles/themes.dart';
 import 'package:mvvm_demo/view_model/movies_view_model.dart';
-import 'package:mvvm_demo/view_model/video_view_model.dart';
 import 'package:mvvm_demo/views/movies_view.dart';
 import 'package:provider/provider.dart';
 
@@ -19,11 +18,11 @@ class MyApp extends StatelessWidget {
     return   MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => MoviesViewModel()),
-        ChangeNotifierProvider(create: (_) => VideoViewModel()),
       ],
-      child: const MaterialApp(
+      child:  MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: MoviesView(),
+        theme: lightTheme,
+        home: const MoviesView(),
       ),
     );
   }

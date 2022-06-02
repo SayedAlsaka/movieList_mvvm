@@ -10,6 +10,7 @@ class MoviesView extends StatelessWidget {
   Widget build(BuildContext context) {
     var provider = Provider.of<MoviesViewModel>(context, listen: false);
     return Scaffold(
+      appBar: AppBar(title: const Center(child:  Text('Top 250 Movies')),),
       body: Center(
         child: FutureBuilder(
             future: provider.getTopMovies(),
@@ -23,10 +24,11 @@ class MoviesView extends StatelessWidget {
                             InkWell(
                               onTap: () async{
                                 await provider.getTopMoviesVideoId(index);
+                                await provider.getTopMoviesVideoUrl(provider.videoId);
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => VideoView(id: provider.videoId),
+                                    builder: (context) => VideoView(id: provider.videoURL),
                                   ),
                                 );
                               },
