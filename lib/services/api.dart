@@ -37,7 +37,7 @@ class MoviesApi {
       videoModel = VideoModel.fromJson(json.decode(value.body));
     }).catchError((error) {
     });
-    String videoURL = videoModel.videos![1].url!;
+    String videoURL = videoModel.videos![0].url!;
 
     return videoURL;
   }

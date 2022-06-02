@@ -22,7 +22,6 @@ class _VideoViewState extends State<VideoView> {
     _controller.setVolume(1.0);
     super.initState();
   }
-
   @override
   void dispose() {
     _controller.dispose();
