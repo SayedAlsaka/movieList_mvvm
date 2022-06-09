@@ -1,28 +1,29 @@
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hexcolor/hexcolor.dart';
-
+import 'package:mvvm_demo/resources/colors_manager.dart';
 
 
 ThemeData darkTheme = ThemeData(
-  scaffoldBackgroundColor: HexColor('333739'),
-  appBarTheme: AppBarTheme(
-      backwardsCompatibility: false,
+  cursorColor: ColorManager.white,
+  scaffoldBackgroundColor: Colors.black,
+backgroundColor: Colors.black,
+  cardTheme:  CardTheme(
+    color: HexColor('242424'),
+  ),
+  appBarTheme:  AppBarTheme(
       titleSpacing: 20.0,
       systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarColor: HexColor('333739'),
+        statusBarColor: HexColor('242424'),
         statusBarIconBrightness: Brightness.light,
       ),
-      backgroundColor: HexColor('333739'),
+      backgroundColor: Colors.black,
       elevation: 0.0,
-      iconTheme: const IconThemeData(
+      iconTheme: IconThemeData(
         color: Colors.white,
       ),
-      titleTextStyle: const TextStyle(
-        fontFamily:'Jannah',
-
+      titleTextStyle: TextStyle(
         color: Colors.white,
         fontSize: 20.0,
         fontWeight: FontWeight.bold,
@@ -30,48 +31,57 @@ ThemeData darkTheme = ThemeData(
 
 
   ),
+  iconTheme:IconThemeData(color: ColorManager.yellow),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
     type: BottomNavigationBarType.fixed,
-    selectedItemColor: Colors.orange,
+    selectedItemColor: ColorManager.yellow,
     unselectedItemColor: Colors.grey,
     elevation: 20.0,
-    backgroundColor: HexColor('333739'),
+    backgroundColor: HexColor('070707'),
   ),
   textTheme: const TextTheme(
+    headline4: TextStyle(
+      color: Colors.white
+    ),
     bodyText1: TextStyle(
-      fontSize: 18.0,
-      fontWeight: FontWeight.w600,
+      fontSize: 25.0,
+      fontWeight: FontWeight.w500,
+      color: Colors.white,
+    ),
+    bodyText2:TextStyle(
+      fontSize: 15.0,
       color: Colors.white,
     ),
     subtitle1: TextStyle(
-      fontSize: 16.0,
-      fontWeight: FontWeight.w600,
+      fontSize: 15.0,
       color: Colors.white,
-      height: 1.3,
+     // height: 1.3,
     ),
   ),
-  fontFamily:'Jannah',
-
+  primarySwatch: Colors.yellow,
 
 );
-ThemeData lightTheme = ThemeData(
 
+
+ThemeData lightTheme = ThemeData(
+  cursorColor: ColorManager.black,
+  cardColor:Colors.white,
+  backgroundColor: Colors.white,
   scaffoldBackgroundColor: Colors.white,
-  snackBarTheme: const SnackBarThemeData(contentTextStyle: TextStyle(fontFamily: 'Tajawal')),
   appBarTheme: const AppBarTheme(
     titleSpacing: 20.0,
     backwardsCompatibility: false,
-    systemOverlayStyle: SystemUiOverlayStyle(
+    systemOverlayStyle: const SystemUiOverlayStyle(
       statusBarColor: Colors.white,
       statusBarIconBrightness: Brightness.dark,
     ),
     backgroundColor: Colors.white,
     elevation: 0.0,
-    iconTheme: IconThemeData(
+    iconTheme: const IconThemeData(
       color: Colors.black,
     ),
-    titleTextStyle: TextStyle(
-      fontFamily:'Tajawal',
+    titleTextStyle: const TextStyle(
+      fontFamily:'Jannah',
       color: Colors.black,
       fontSize: 20.0,
       fontWeight: FontWeight.bold,
@@ -79,13 +89,20 @@ ThemeData lightTheme = ThemeData(
   ),
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
     type: BottomNavigationBarType.fixed,
-    selectedItemColor: Colors.orange,
+    selectedItemColor: Colors.black,
   ),
   textTheme: const TextTheme(
+    headline4:  TextStyle(
+        color: Colors.black
+    ),
     bodyText1: TextStyle(
-      fontSize: 18.0,
-      fontWeight: FontWeight.w600,
+      fontSize: 25.0,
+      fontWeight: FontWeight.w500,
       color: Colors.black,
+    ),
+    bodyText2:TextStyle(
+      fontSize: 15.0,
+      color: Colors.grey,
     ),
     subtitle1: TextStyle(
       fontSize: 16.0,
@@ -94,6 +111,5 @@ ThemeData lightTheme = ThemeData(
       height: 1.3,
     ),
   ),
-  fontFamily:'Tajawal',
-
 );
+

@@ -1,44 +1,35 @@
 import 'dart:convert';
 
-import 'package:mvvm_demo/models/movie_model.dart';
+import 'package:mvvm_demo/models/coming_soon_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:mvvm_demo/models/video_model.dart';
-import 'package:mvvm_demo/models/youtube_model.dart';
+import 'package:mvvm_demo/models/in_theaters_model.dart';
+import 'package:mvvm_demo/resources/constants_manager.dart';
 
-import '../shared/network/end_points.dart';
 
-class MoviesApi {
-  late MovieModel movieModel;
-  late YoutubeModel youtubeModel;
-  late VideoModel videoModel;
-  Future<List<MovieItemsModel>> getTopMovies() async {
-    await http.get(Uri.parse(url)).then((value) {
-      movieModel = MovieModel.fromJson(json.decode(value.body));
+class HomeApi {
+
+   late ComingSoonModel comingSoonModel;
+   late InTheatersModel inTheatersModel;
+  Future<List<ItemsC>> getComingSoonMovies() async {
+    await http.get(Uri.parse(AppConstants.urlComingSoon)).then((value) {
+      comingSoonModel = ComingSoonModel.fromJson(json.decode(value.body));
+      print(comingSoonModel.items![0].title);
     }).catchError((error) {
       print(error.toString());
     });
-    List<MovieItemsModel> moviesList = movieModel.movie!;
+    List<ItemsC> moviesList = comingSoonModel.items!;
     return moviesList;
   }
 
-  Future<String> getTopMoviesVideoId(index) async {
-   await  getTopMovies();
-     await http.get(Uri.parse(youtubeUrl+movieModel.movie![index].id)).then((value) {
-      youtubeModel = YoutubeModel.fromJson(json.decode(value.body));
-    }).catchError((error) {
-    });
-    String videoId = youtubeModel.videoId!;
+   Future<List<ItemsT>> getInTheatersMovies() async {
+     await http.get(Uri.parse(AppConstants.urlInTheaters)).then((value) {
+       inTheatersModel = InTheatersModel.fromJson(json.decode(value.body));
+       print(inTheatersModel.items![0].title);
+     }).catchError((error) {
+       print(error.toString());
+     });
+     List<ItemsT> moviesList = inTheatersModel.items!;
+     return moviesList;
+   }
 
-    return videoId;
-  }
-
-  Future<String> getTopMoviesVideo(id) async {
-    await http.get(Uri.parse(videoUrl+id)).then((value) {
-      videoModel = VideoModel.fromJson(json.decode(value.body));
-    }).catchError((error) {
-    });
-    String videoURL = videoModel.videos![0].url!;
-
-    return videoURL;
-  }
 }

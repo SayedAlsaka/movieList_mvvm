@@ -1,130 +1,139 @@
-import 'package:flutter/cupertino.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:mvvm_demo/view_model/movies_view_model.dart';
+import 'package:mvvm_demo/resources/constants_manager.dart';
+import 'package:mvvm_demo/resources/strings_manager.dart';
+import 'package:mvvm_demo/resources/values_manager.dart';
+import 'package:mvvm_demo/shared/components.dart';
+import 'package:mvvm_demo/view_model/app_view_model.dart';
+import 'package:mvvm_demo/view_model/home_view_model.dart';
 import 'package:provider/provider.dart';
+import '../resources/assets_manager.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<HomeViewModel>(context, listen: false);
-    return Scaffold(
-      appBar: AppBar(
-        title: const Center(child: Text('Top 250 Movies')),
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Card(
-            elevation: 10,
-            child: SizedBox(
-              width: double.infinity,
-              height: 420,
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(left: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Coming soon',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                        ),
-                        TextButton(
-                            onPressed: () {},
-                            child: const Text(
-                              'SEE ALL',
-                            ))
-                      ],
-                    ),
+    var provider = Provider.of<HomeViewModel>(context,listen:false);
+    var appProvider = Provider.of<AppViewModel>(context,listen: false);
+    List<String> images = [
+      ImageAssets.filmLogo,
+      ImageAssets.filmLogo,
+      ImageAssets.filmLogo,
+    ];
+    return SafeArea(
+      child: Scaffold(
+        body: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // movie trailer
+                CarouselSlider(
+                  options: CarouselOptions(
+                    height: AppConstants.carouselHeight1,
+                    autoPlay: true,
+                    autoPlayInterval: Duration(seconds: AppSize.s5.toInt()),
+                    viewportFraction: AppSize.s1,
+                    aspectRatio: AppSize.s2,
+                    enlargeCenterPage: true,
                   ),
-                  FutureBuilder(
-                      future: provider.getComingSoonMovies(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          return Container(
-                            width: double.infinity,
-                            height: 350,
-                            padding: const EdgeInsets.all(10),
-                            child: ListView.separated(
-                              scrollDirection: Axis.horizontal,
-                              separatorBuilder: (context, _) => const SizedBox(
-                                width: 0,
-                              ),
-                              itemBuilder: (context, index) => Card(
-                                elevation: 5,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: Container(
-                                  width: (MediaQuery.of(context).size.width / 2) - 50,
-                                  decoration: const BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(10),
-                                          topRight: Radius.circular(10))),
-                                  child: Column(
+                  items: images
+                      .map((item) => Align(
+                            alignment: AlignmentDirectional.topCenter,
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              alignment: AlignmentDirectional.bottomStart,
+                              children: [
+                                Container(
+                                  height: 218.0,
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                        item,
+                                      ),
+                                      fit: BoxFit.cover,
+                                    ),
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(AppSize.s4),
+                                      topRight: Radius.circular(AppSize.s4),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom:
+                                      AppConstants.bottomPosition.toDouble(),
+                                  left: AppSize.s20,
+                                  child: Stack(
                                     children: [
                                       Container(
-                                        decoration:  BoxDecoration(
-                                          borderRadius: const BorderRadius.only(
-                                              topLeft: Radius.circular(20),
-                                              topRight: Radius.circular(20)),
-                                          color: Colors.red,
+                                        height: AppConstants.carouselHeight2,
+                                        width: AppConstants.carouselWidth,
+                                        decoration: BoxDecoration(
                                           image: DecorationImage(
-                                              image: NetworkImage(
-                                                  provider.comingSoonList[index].image!),
-                                              fit: BoxFit.fill),
-                                        ),
-                                        width:
-                                        (MediaQuery.of(context).size.width / 2) - 50,
-                                        height: 220,
-                                      ),
-                                      const SizedBox(
-                                        height: 5.0,
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.only(left: 5.0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: const [
-                                                Icon(
-                                                  Icons.star,
-                                                  size: 18.0,
-                                                  color: Colors.orange,
-                                                ),
-                                                SizedBox(
-                                                  width: 5.0,
-                                                ),
-                                                Text('6.3'),
-                                              ],
+                                            image: AssetImage(
+                                              item,
                                             ),
-                                            const SizedBox(height: 10.0,),
-                                             Text(provider.comingSoonList[index].title!),
-                                            const SizedBox(height: 10.0,),
-                                            Text(provider.comingSoonList[index].year!,style: TextStyle(color: Colors.grey[700]),),
-                                          ],
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        left: -12,
+                                        top: -5,
+                                        child: Container(
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.only(
+                                              topLeft:
+                                                  Radius.circular(AppSize.s20),
+                                            ),
+                                            image: DecorationImage(
+                                                image: AssetImage(
+                                                    ImageAssets.bookmarkLogo),
+                                                fit: BoxFit.fill),
+                                          ),
+                                          width: 60,
+                                          height: 50,
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
-                              ),
-                              itemCount: provider.comingSoonList.length,
+                              ],
                             ),
-                          );
-                        } else {
-                          return const CircularProgressIndicator();
-                        }
-                      }),
-                ],
-              ),
+                          ))
+                      .toList(),
+                ),
+                cardMovie(
+                    context: context,
+                    title: AppStrings.comingSoon,
+                    movieImage: ImageAssets.filmLogo,
+                    movieName: 'Jurassic World: Dominion',
+                    movieYear: '2022 PG-13',
+                    ),
+                cardMovie(
+                    context: context,
+                    title: AppStrings.inTheaters,
+                    movieImage: ImageAssets.filmLogo,
+                    movieName: 'Top Gun: Maverick',
+                    movieYear: '2022 PG-13'),
+                boxOfficeCard(
+                    context: context,
+                    title: AppStrings.boxOffice,
+                    movieNumber: '1',
+                    movieName: 'Top Gun: Maverick',
+                    moviePrice: '86'),
+
+                const SizedBox(
+                  height: 10.0,
+                )
+              ],
             ),
           ),
-
-        ],
+        ),
       ),
     );
   }

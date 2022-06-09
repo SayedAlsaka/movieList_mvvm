@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "615822233407",
+    "project_id": "movie-corn-app-2ccce",
+    "storage_bucket": "movie-corn-app-2ccce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:615822233407:android:b057b686adbb96b3978d8a",
+        "android_client_info": {
+          "package_name": "com.example.mvvm_demo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "615822233407-hjm0fef7rma6l2tukailubd4ns1qkbiu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0dto2vmpZTYen7MlcPRdJu7okSclwVFw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "615822233407-hjm0fef7rma6l2tukailubd4ns1qkbiu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
