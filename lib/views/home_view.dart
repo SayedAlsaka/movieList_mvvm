@@ -1,11 +1,14 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:mvvm_demo/resources/colors_manager.dart';
 import 'package:mvvm_demo/resources/constants_manager.dart';
 import 'package:mvvm_demo/resources/strings_manager.dart';
 import 'package:mvvm_demo/resources/values_manager.dart';
 import 'package:mvvm_demo/shared/components.dart';
 import 'package:mvvm_demo/view_model/app_view_model.dart';
 import 'package:mvvm_demo/view_model/home_view_model.dart';
+import 'package:mvvm_demo/views/movie_details_view.dart';
+import 'package:mvvm_demo/views/video_view.dart';
 import 'package:provider/provider.dart';
 import '../resources/assets_manager.dart';
 
@@ -14,8 +17,8 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<HomeViewModel>(context,listen:false);
-    var appProvider = Provider.of<AppViewModel>(context,listen: false);
+    var provider = Provider.of<HomeViewModel>(context, listen: false);
+    var appProvider = Provider.of<AppViewModel>(context, listen: false);
     List<String> images = [
       ImageAssets.filmLogo,
       ImageAssets.filmLogo,
@@ -30,7 +33,7 @@ class HomeView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // movie trailer
+                //movie trailer
                 CarouselSlider(
                   options: CarouselOptions(
                     height: AppConstants.carouselHeight1,
@@ -47,20 +50,45 @@ class HomeView extends StatelessWidget {
                               clipBehavior: Clip.none,
                               alignment: AlignmentDirectional.bottomStart,
                               children: [
-                                Container(
-                                  height: 218.0,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: AssetImage(
-                                        item,
+                                InkWell(
+                                  onTap: (){
+                                    navigatePush(context, MovieDetailsView());
+                                    //navigatePush(context, VideoView(id: 'https://imdb-api.com/APIYouTube?apiKey=k_2eqt4crl&v=https://www.youtube.com/watch?v=8hP9D6kZseM'));
+                                  },
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Container(
+                                        height: 218.0,
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: AssetImage(
+                                              item,
+                                            ),
+                                            fit: BoxFit.cover,
+                                          ),
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(AppSize.s4),
+                                            topRight: Radius.circular(AppSize.s4),
+                                          ),
+                                        ),
                                       ),
-                                      fit: BoxFit.cover,
-                                    ),
-                                    borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(AppSize.s4),
-                                      topRight: Radius.circular(AppSize.s4),
-                                    ),
+                                      Container(
+                                        decoration: const BoxDecoration(
+                                          // borderRadius: BorderRadius.only(
+                                          //   topLeft:
+                                          //   Radius.circular(AppSize.s20),
+                                          // ),
+                                          image: DecorationImage(
+                                              image: AssetImage(
+                                                  ImageAssets.playVideoLogo),
+                                              fit: BoxFit.fill),
+                                        ),
+                                        width: 100,
+                                        height: 100,
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 Positioned(
@@ -107,25 +135,59 @@ class HomeView extends StatelessWidget {
                           ))
                       .toList(),
                 ),
-                cardMovie(
-                    context: context,
-                    title: AppStrings.comingSoon,
-                    movieImage: ImageAssets.filmLogo,
-                    movieName: 'Jurassic World: Dominion',
-                    movieYear: '2022 PG-13',
-                    ),
-                cardMovie(
-                    context: context,
-                    title: AppStrings.inTheaters,
-                    movieImage: ImageAssets.filmLogo,
-                    movieName: 'Top Gun: Maverick',
-                    movieYear: '2022 PG-13'),
-                boxOfficeCard(
-                    context: context,
-                    title: AppStrings.boxOffice,
-                    movieNumber: '1',
-                    movieName: 'Top Gun: Maverick',
-                    moviePrice: '86'),
+                // FutureBuilder(
+                //   future: provider.getComingSoonMovies(),
+                //   builder: (context, snapshot) {
+                //     if (snapshot.connectionState == ConnectionState.done) {
+                //       return cardMovie(
+                //         context: context,
+                //         cardTitle: AppStrings.comingSoon,
+                //         movies:
+                //             Provider.of<HomeViewModel>(context).comingSoonList,
+                //       );
+                //     } else {
+                //       return Center(
+                //           child: CircularProgressIndicator(
+                //         color: ColorManager.yellow,
+                //       ));
+                //     }
+                //   },
+                // ),
+                // FutureBuilder(
+                //   future: provider.getInTheatersMovies(),
+                //   builder: (context, snapshot) {
+                //     if (snapshot.connectionState == ConnectionState.done) {
+                //       return cardMovie(
+                //         context: context,
+                //         cardTitle: AppStrings.inTheaters,
+                //         movies:
+                //             Provider.of<HomeViewModel>(context).inTheaterList,
+                //       );
+                //     } else {
+                //       return Center(
+                //           child: CircularProgressIndicator(
+                //         color: ColorManager.yellow,
+                //       ));
+                //     }
+                //   },
+                // ),
+                // FutureBuilder(
+                //   future: provider.getBoxOfficeMovies(),
+                //   builder: (context, snapshot) {
+                //     if (snapshot.connectionState == ConnectionState.done) {
+                //       return   boxOfficeCard(
+                //           context: context,
+                //           cardTitle: AppStrings.boxOffice,
+                //           movies: Provider.of<HomeViewModel>(context).boxOfficeList
+                //       );
+                //     } else {
+                //       return Center(
+                //           child: CircularProgressIndicator(
+                //             color: ColorManager.yellow,
+                //           ));
+                //     }
+                //   },
+                // ),
 
                 const SizedBox(
                   height: 10.0,

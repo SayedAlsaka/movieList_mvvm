@@ -48,7 +48,6 @@ class _MainViewState extends State<MainView> {
     }
     else  if ( Provider.of<AppViewModel>(context).hasInternet == false)
       {
-        print('saka');
         return const NoInternetView();
       }
     return const Scaffold(body: Center(child: CircularProgressIndicator()));

@@ -7,23 +7,23 @@ import 'package:mvvm_demo/resources/colors_manager.dart';
 
 ThemeData darkTheme = ThemeData(
   cursorColor: ColorManager.white,
-  scaffoldBackgroundColor: Colors.black,
+  scaffoldBackgroundColor: HexColor('242424'),
 backgroundColor: Colors.black,
   cardTheme:  CardTheme(
     color: HexColor('242424'),
   ),
   appBarTheme:  AppBarTheme(
+    color: HexColor('00000027'),
       titleSpacing: 20.0,
       systemOverlayStyle: SystemUiOverlayStyle(
         statusBarColor: HexColor('242424'),
         statusBarIconBrightness: Brightness.light,
       ),
-      backgroundColor: Colors.black,
       elevation: 0.0,
-      iconTheme: IconThemeData(
+      iconTheme: const IconThemeData(
         color: Colors.white,
       ),
-      titleTextStyle: TextStyle(
+      titleTextStyle: const TextStyle(
         color: Colors.white,
         fontSize: 20.0,
         fontWeight: FontWeight.bold,
@@ -37,7 +37,7 @@ backgroundColor: Colors.black,
     selectedItemColor: ColorManager.yellow,
     unselectedItemColor: Colors.grey,
     elevation: 20.0,
-    backgroundColor: HexColor('070707'),
+    backgroundColor: HexColor('242424'),
   ),
   textTheme: const TextTheme(
     headline4: TextStyle(
@@ -70,18 +70,15 @@ ThemeData lightTheme = ThemeData(
   scaffoldBackgroundColor: Colors.white,
   appBarTheme: const AppBarTheme(
     titleSpacing: 20.0,
-    backwardsCompatibility: false,
-    systemOverlayStyle: const SystemUiOverlayStyle(
+    systemOverlayStyle: SystemUiOverlayStyle(
       statusBarColor: Colors.white,
       statusBarIconBrightness: Brightness.dark,
     ),
     backgroundColor: Colors.white,
-    elevation: 0.0,
-    iconTheme: const IconThemeData(
+    iconTheme: IconThemeData(
       color: Colors.black,
     ),
-    titleTextStyle: const TextStyle(
-      fontFamily:'Jannah',
+    titleTextStyle: TextStyle(
       color: Colors.black,
       fontSize: 20.0,
       fontWeight: FontWeight.bold,

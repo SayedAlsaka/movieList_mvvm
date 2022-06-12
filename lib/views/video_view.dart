@@ -45,7 +45,7 @@ class _VideoViewState extends State<VideoView> {
           }
           else
             {
-              return Center(
+              return const Center(
                 child: CircularProgressIndicator(),
               );
             }

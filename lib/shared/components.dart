@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mvvm_demo/models/box_office_model.dart';
 import 'package:mvvm_demo/resources/colors_manager.dart';
 
+import '../models/coming_soon_model.dart';
 import '../resources/assets_manager.dart';
 import '../resources/constants_manager.dart';
 import '../resources/strings_manager.dart';
@@ -109,13 +111,11 @@ Widget defaultFormField({
       onChanged: onChange as void Function(String)?,
     );
 
-Widget cardMovie(
-        {required context,
-        required title,
-        required movieImage,
-        required movieName,
-        required movieYear,
-        }) =>
+Widget cardMovie({
+  required context,
+  required cardTitle,
+  required List movies,
+}) =>
     Card(
       elevation: AppSize.s10,
       child: SizedBox(
@@ -129,7 +129,7 @@ Widget cardMovie(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    title,
+                    cardTitle,
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
                   TextButton(
@@ -173,7 +173,7 @@ Widget cardMovie(
                                 image: DecorationImage(
                                     // image: NetworkImage(
                                     //     provider.comingSoonList[index].image!),
-                                    image: AssetImage(movieImage),
+                                    image: NetworkImage(movies[index].image!),
                                     fit: BoxFit.fill),
                               ),
                               width: (MediaQuery.of(context).size.width /
@@ -212,14 +212,14 @@ Widget cardMovie(
                               children: [
                                 // Text(provider.comingSoonList[index].title!),
                                 Text(
-                                  movieName,
+                                  movies[index].title!,
                                   style: Theme.of(context).textTheme.subtitle1,
                                 ),
                                 Row(
                                   children: [
                                     //Text('${provider.comingSoonList[index].year} ${provider.comingSoonList[index].contentRating}',style: TextStyle(color: Colors.grey[700]),),
                                     Text(
-                                      movieYear,
+                                      '${movies[index].year} ${movies[index].contentRating}',
                                       style: TextStyle(color: Colors.grey[700]),
                                     ),
                                   ],
@@ -232,7 +232,7 @@ Widget cardMovie(
                     ),
                   ),
                 ),
-                itemCount: 6,
+                itemCount: movies.length,
               ),
             ),
           ],
@@ -242,10 +242,8 @@ Widget cardMovie(
 
 Widget boxOfficeCard({
   required context,
-  required title,
-  required movieNumber,
-  required movieName,
-  required moviePrice,
+  required cardTitle,
+  required List<Items> movies,
 }) =>
     Card(
       elevation: AppSize.s10,
@@ -281,52 +279,53 @@ Widget boxOfficeCard({
                 separatorBuilder: (context, _) => const SizedBox(
                   height: AppSize.s10,
                 ),
-                itemBuilder: (context, index) => Column(
+                itemBuilder: (context, index) => Row(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Text(movieNumber,
-                                style: Theme.of(context).textTheme.bodyText1),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            const Icon(
-                              Icons.bookmark_add,
-                              size: 40,
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(movieName,
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1),
-                                 Text(
-                                  '\$$moviePrice',
-                                  style: const TextStyle(color: Colors.grey),
-                                ),
-                              ],
-                            ),
-                          ],
+                    Text(movies[index].rank!,
+                        style: Theme.of(context).textTheme.bodyText1),
+                    InkWell(
+                      onTap: () {},
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(AppSize.s20),
+                          ),
+                          image: DecorationImage(
+                              image: AssetImage(ImageAssets.bookmarkLogo),
+                              fit: BoxFit.fill),
                         ),
-                        Row(
-                          children: const [
-                            Icon(Icons.check_box_outlined),
-                          ],
-                        ),
-                      ],
+                        width: 60,
+                        height: 50,
+                      ),
                     ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(movies[index].title!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.bodyText1),
+                          Text(
+                            movies[index].gross!,
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(Icons.airplane_ticket),
                   ],
                 ),
-                itemCount: 6,
+                itemCount: movies.length,
               ),
             ),
           ],
         ),
       ),
     );
+
+Widget myDivider ()=> Container(
+  width: double.infinity,
+  height: 1.0,
+  color: Colors.grey[400],
+);

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:mvvm_demo/services/api.dart';
 
+import '../models/box_office_model.dart';
 import '../models/coming_soon_model.dart';
 import '../models/in_theaters_model.dart';
 
@@ -10,6 +11,7 @@ class HomeViewModel extends ChangeNotifier
 {
 List<ItemsC> comingSoonList =[];
 List<ItemsT> inTheaterList =[];
+List<Items> boxOfficeList =[];
 
 Future<void>getComingSoonMovies() async
 {
@@ -19,6 +21,11 @@ Future<void>getComingSoonMovies() async
 Future<void>getInTheatersMovies() async
 {
   inTheaterList = await HomeApi().getInTheatersMovies();
+  notifyListeners();
+}
+Future<void>getBoxOfficeMovies() async
+{
+  boxOfficeList = await HomeApi().getBoxOfficeMovies();
   notifyListeners();
 }
 
