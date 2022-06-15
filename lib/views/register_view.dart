@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:mvvm_demo/resources/strings_manager.dart';
+import 'package:mvvm_demo/resources/values_manager.dart';
 import 'package:mvvm_demo/shared/components.dart';
 import 'package:mvvm_demo/view_model/app_view_model.dart';
 import 'package:mvvm_demo/view_model/register_view_model.dart';
@@ -30,7 +31,7 @@ class RegisterView extends StatelessWidget {
         child: Center(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(AppPadding.p20),
               child: Form(
                 key: formKey,
                 child: Column(
@@ -38,10 +39,7 @@ class RegisterView extends StatelessWidget {
                   children: [
                     Text(
                       AppStrings.register.toUpperCase(),
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline4
-                          ?.copyWith(color: Colors.black),
+                      style: Theme.of(context).textTheme.headline4,
                     ),
                     Text(
                       AppStrings.registerNow,
@@ -50,7 +48,7 @@ class RegisterView extends StatelessWidget {
                           ),
                     ),
                     const SizedBox(
-                      height: 30,
+                      height: AppSize.s30,
                     ),
                     defaultFormField(
                       context: context,
@@ -66,15 +64,20 @@ class RegisterView extends StatelessWidget {
                       picon: Icons.person,
                     ),
                     const SizedBox(
-                      height: 15,
+                      height: AppSize.s15,
                     ),
                     defaultFormField(
                       context: context,
                       controller: emailController,
                       type: TextInputType.emailAddress,
                       validate: (String? value) {
+                        String pattern = AppStrings.emailValidate;
+                        RegExp regex = RegExp(pattern);
                         if (value!.isEmpty) {
                           return AppErrorMessages.emailError;
+                        }
+                        if (!regex.hasMatch(value)) {
+                          return AppErrorMessages.emailError2;
                         }
                         return null;
                       },
@@ -82,7 +85,7 @@ class RegisterView extends StatelessWidget {
                       picon: Icons.email_outlined,
                     ),
                     const SizedBox(
-                      height: 15,
+                      height: AppSize.s15,
                     ),
                     defaultFormField(
                       context: context,
@@ -95,8 +98,13 @@ class RegisterView extends StatelessWidget {
                         provider.changePasswordVisibility();
                       },
                       validate: (String? value) {
+                        String pattern = AppStrings.passwordValidate;
+                        RegExp regex = RegExp(pattern);
                         if (value!.isEmpty) {
                           return AppErrorMessages.passwordError;
+                        }
+                        if (!regex.hasMatch(value)) {
+                          return AppErrorMessages.passwordError2;
                         }
                         return null;
                       },
@@ -104,7 +112,7 @@ class RegisterView extends StatelessWidget {
                       picon: Icons.lock_outline,
                     ),
                     const SizedBox(
-                      height: 15,
+                      height: AppSize.s15,
                     ),
                     defaultFormField(
                       context: context,
@@ -120,23 +128,31 @@ class RegisterView extends StatelessWidget {
                       picon: Icons.book,
                     ),
                     const SizedBox(
-                      height: 30,
+                      height: AppSize.s30,
                     ),
                     defaultButton(
                       background: ColorManager.yellow,
-                      function: () {
+                      style: Theme.of(context).textTheme.headlineSmall!,
+                      function: () async {
                         if (formKey.currentState!.validate()) {
                           appProvider.changeIsLoading(true);
-                          provider
-                              .userRegister(
-                                  name: nameController.text,
-                                  email: emailController.text,
-                                  password: passwordController.text,
-                                  bio: bioController.text)
-                              .then((value) {
+                          await provider.userRegister(
+                              name: nameController.text,
+                              email: emailController.text,
+                              password: passwordController.text,
+                              bio: bioController.text);
+                          if (provider.errorMessage == '') {
                             appProvider.changeIsLoading(false);
+                            ScaffoldMessenger.of(context).showSnackBar(snackBar(
+                                msg: AppStrings.registerSuccess,
+                                state: ToastStates.SUCCESS));
                             navigateAndFinish(context, LoginView());
-                          });
+                          } else {
+                            appProvider.changeIsLoading(false);
+                            ScaffoldMessenger.of(context).showSnackBar(snackBar(
+                                msg: provider.errorMessage!,
+                                state: ToastStates.ERROR));
+                          }
                         }
                       },
                       text: AppStrings.register,

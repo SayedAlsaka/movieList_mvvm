@@ -5,6 +5,9 @@ class AppConstants {
   static const urlComingSoon = 'https://imdb-api.com/en/API/ComingSoon/$apiKey';
   static const urlInTheaters = 'https://imdb-api.com/en/API/InTheaters/$apiKey';
   static const urlTopRatedMovies = 'https://imdb-api.com/en/API/BoxOffice/$apiKey';
+  static const urlVideoId = 'https://imdb-api.com/en/API/YouTubeTrailer/$apiKey/';
+  static const urlVideoUrl = 'https://imdb-api.com/en/API/YouTube/$apiKey/';
+  static const urlSearch = 'https://imdb-api.com/en/API/SearchAll/$apiKey/';
   static const userCollection = 'users';
   static const  carouselHeight1 = 300.0;
   static const bottomPosition = -50;

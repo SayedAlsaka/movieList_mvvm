@@ -5,12 +5,10 @@ import 'package:mvvm_demo/resources/constants_manager.dart';
 import 'package:mvvm_demo/shared/network/local/cash_helper.dart';
 
 class ProfileViewModel extends ChangeNotifier {
-  late UserModel model;
-
+  late UserModel model ;
 
 
   Future<void> getUserData() async {
-
     AppConstants.uId = CashHelper.getData(key: 'uId');
     await FirebaseFirestore.instance
         .collection(AppConstants.userCollection)

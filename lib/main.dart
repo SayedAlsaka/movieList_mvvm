@@ -8,13 +8,11 @@ import 'package:mvvm_demo/view_model/home_view_model.dart';
 import 'package:mvvm_demo/view_model/login_view_model.dart';
 import 'package:mvvm_demo/view_model/profile_view_model.dart';
 import 'package:mvvm_demo/view_model/register_view_model.dart';
+import 'package:mvvm_demo/view_model/search_view_model.dart';
 import 'package:mvvm_demo/view_model/settings_view_model.dart';
-import 'package:mvvm_demo/views/home_view.dart';
+import 'package:mvvm_demo/view_model/video_view_model.dart';
 import 'package:mvvm_demo/views/layout_view.dart';
 import 'package:mvvm_demo/views/login_view.dart';
-import 'package:mvvm_demo/views/no_internet_view.dart';
-import 'package:mvvm_demo/views/profile_view.dart';
-import 'package:mvvm_demo/views/register_view.dart';
 import 'package:provider/provider.dart';
 
 
@@ -47,6 +45,8 @@ void main() async{
     ChangeNotifierProvider(create: (_) => LoginViewModel()),
     ChangeNotifierProvider(create: (_) => ProfileViewModel()),
     ChangeNotifierProvider(create: (_) => AppViewModel()),
+    ChangeNotifierProvider(create: (_) => VideoViewModel()),
+    ChangeNotifierProvider(create: (_) => SearchViewModel()),
   ],
   child:  MyApp(
     startWidget:AppConstants.widget,

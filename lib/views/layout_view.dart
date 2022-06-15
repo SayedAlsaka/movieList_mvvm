@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mvvm_demo/views/home_view.dart';
 import 'package:mvvm_demo/views/no_internet_view.dart';
 import 'package:mvvm_demo/views/profile_view.dart';
+import 'package:mvvm_demo/views/search_view.dart';
 import 'package:mvvm_demo/views/settings_view.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +20,7 @@ class _MainViewState extends State<MainView> {
 
   final screens = [
      const HomeView(),
-    const Center(child: Text('Search', style: TextStyle(fontSize: 60),)),
+    SearchView(),
     const ProfileView(),
     const SettingsView(),
   ];

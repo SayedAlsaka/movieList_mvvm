@@ -1,5 +1,5 @@
-class AppStrings{
-  static const noRouteFound='No Route Found';
+class AppStrings {
+  static const noRouteFound = 'No Route Found';
   static const comingSoon = 'Coming soon';
   static const seeAll = 'SEE ALL';
   static const inTheaters = 'In theaters';
@@ -17,23 +17,24 @@ class AppStrings{
   static const settingButton = 'Sign in / Sign up';
   static const signOutButton = 'sign out';
   static const showTimeButton = 'Showtimes';
-
-
-
-
-
-
+  static const loginSuccess = 'Login successfully';
+  static const registerSuccess = 'Register Successfully';
+  static const emailValidate = r'\w+@\w+\.\w+';
+  static const passwordValidate =
+      r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
+  static const noInternet = 'No Internet';
+  static const deleteAccount='Delete Account';
+  static const deleteSearchRecords='Delete search records';
+  static const deleteBookmarkRecords='Delete bookmark records';
 
 }
 
-
-
-class AppErrorMessages
-{
+class AppErrorMessages {
   static const emailError = 'please enter your email address';
+  static const emailError2 = 'Invalid E-mail Address format';
   static const passwordError = 'please enter your password';
+  static const passwordError2 =
+      '''Password must be at least 8 characters,include an \n uppercase letter, number and symbol.''';
   static const nameError = 'please enter your name';
   static const bioError = 'please enter your bio';
-
-
 }

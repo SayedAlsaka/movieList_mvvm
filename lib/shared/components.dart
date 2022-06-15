@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:mvvm_demo/models/box_office_model.dart';
 import 'package:mvvm_demo/resources/colors_manager.dart';
+import 'package:mvvm_demo/view_model/video_view_model.dart';
+import 'package:mvvm_demo/views/movie_details_view.dart';
+import 'package:provider/provider.dart';
 
 import '../models/coming_soon_model.dart';
 import '../resources/assets_manager.dart';
 import '../resources/constants_manager.dart';
 import '../resources/strings_manager.dart';
 import '../resources/values_manager.dart';
+import '../view_model/home_view_model.dart';
 
 void navigatePush(context, widget) => Navigator.push(
       context,
@@ -43,6 +47,10 @@ Widget defaultButton({
   Color background = Colors.grey,
   Color textColor = Colors.black,
   ShapeBorder? shape,
+  TextStyle style =const TextStyle(
+    color: Colors.blue,
+    fontSize: 18.0,
+  ),
   required Function()? function,
   required String text,
 }) =>
@@ -55,10 +63,7 @@ Widget defaultButton({
         shape: shape,
         child: Text(
           text,
-          style: TextStyle(
-            color: textColor,
-            fontSize: 18.0,
-          ),
+          style: style,
         ),
       ),
     );
@@ -161,74 +166,80 @@ Widget cardMovie({
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(AppSize.s10),
                             topRight: Radius.circular(AppSize.s10))),
-                    child: Column(
-                      children: [
-                        Stack(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(AppSize.s10),
-                                    topRight: Radius.circular(AppSize.s10)),
-                                image: DecorationImage(
-                                    // image: NetworkImage(
-                                    //     provider.comingSoonList[index].image!),
-                                    image: NetworkImage(movies[index].image!),
-                                    fit: BoxFit.fill),
-                              ),
-                              width: (MediaQuery.of(context).size.width /
-                                      AppSize.s2) -
-                                  50,
-                              height: 220,
-                            ),
-                            Positioned(
-                              left: -12,
-                              top: -3,
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(AppSize.s20),
-                                  ),
+                    child: InkWell(
+                      onTap: ()async{
+                        await Provider.of<VideoViewModel>(context,listen: false).getVideoUrl(movies[index].id);
+                        navigatePush(context, MovieDetailsView(movie: movies[index] , category: cardTitle, id: Provider.of<VideoViewModel>(context,listen: false).videoUrl,));
+                      },
+                      child: Column(
+                        children: [
+                          Stack(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(AppSize.s10),
+                                      topRight: Radius.circular(AppSize.s10)),
                                   image: DecorationImage(
-                                      image:
-                                          AssetImage(ImageAssets.bookmarkLogo),
+                                      // image: NetworkImage(
+                                      //     provider.comingSoonList[index].image!),
+                                      image: NetworkImage(movies[index].image!),
                                       fit: BoxFit.fill),
                                 ),
-                                width: 60,
-                                height: 50,
+                                width: (MediaQuery.of(context).size.width /
+                                        AppSize.s2) -
+                                    50,
+                                height: 220,
+                              ),
+                              Positioned(
+                                left: -12,
+                                top: -3,
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(AppSize.s20),
+                                    ),
+                                    image: DecorationImage(
+                                        image:
+                                            AssetImage(ImageAssets.bookmarkLogo),
+                                        fit: BoxFit.fill),
+                                  ),
+                                  width: 60,
+                                  height: 50,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: AppSize.s5,
+                          ),
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.only(left: AppSize.s5),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  // Text(provider.comingSoonList[index].title!),
+                                  Text(
+                                    movies[index].title!,
+                                    style: Theme.of(context).textTheme.subtitle1,
+                                  ),
+                                  Row(
+                                    children: [
+                                      //Text('${provider.comingSoonList[index].year} ${provider.comingSoonList[index].contentRating}',style: TextStyle(color: Colors.grey[700]),),
+                                      Text(
+                                        '${movies[index].year} ${movies[index].contentRating}',
+                                        style: TextStyle(color: Colors.grey[700]),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: AppSize.s5,
-                        ),
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.only(left: AppSize.s5),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                // Text(provider.comingSoonList[index].title!),
-                                Text(
-                                  movies[index].title!,
-                                  style: Theme.of(context).textTheme.subtitle1,
-                                ),
-                                Row(
-                                  children: [
-                                    //Text('${provider.comingSoonList[index].year} ${provider.comingSoonList[index].contentRating}',style: TextStyle(color: Colors.grey[700]),),
-                                    Text(
-                                      '${movies[index].year} ${movies[index].contentRating}',
-                                      style: TextStyle(color: Colors.grey[700]),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -299,18 +310,22 @@ Widget boxOfficeCard({
                       ),
                     ),
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(movies[index].title!,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.bodyText1),
-                          Text(
-                            movies[index].gross!,
-                            style: const TextStyle(color: Colors.grey),
-                          ),
-                        ],
+                      child: InkWell(
+                        onTap: (){
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(movies[index].title!,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.bodyText1),
+                            Text(
+                              movies[index].gross!,
+                              style: const TextStyle(color: Colors.grey),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     const Icon(Icons.airplane_ticket),
@@ -329,3 +344,37 @@ Widget myDivider ()=> Container(
   height: 1.0,
   color: Colors.grey[400],
 );
+
+
+enum ToastStates { SUCCESS, ERROR, WARNING }
+
+SnackBar snackBar({
+  required String msg,
+  required ToastStates state,
+}) =>
+    SnackBar(
+        duration: const Duration(seconds: 3),
+        backgroundColor: chooseToastColor(state),
+        content: Text(
+          msg,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+              fontFamily: 'Tajawal', fontSize: 18.0, color: Colors.white),
+        ));
+
+Color chooseToastColor(ToastStates state) {
+  Color color;
+
+  switch (state) {
+    case ToastStates.SUCCESS:
+      color = ColorManager.grey;
+      break;
+    case ToastStates.WARNING:
+      color = ColorManager.yellow;
+      break;
+    case ToastStates.ERROR:
+      color = ColorManager.error;
+      break;
+  }
+  return color;
+}

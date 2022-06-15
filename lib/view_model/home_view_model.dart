@@ -12,6 +12,7 @@ class HomeViewModel extends ChangeNotifier
 List<ItemsC> comingSoonList =[];
 List<ItemsT> inTheaterList =[];
 List<Items> boxOfficeList =[];
+bool bookMark = false;
 
 Future<void>getComingSoonMovies() async
 {
@@ -26,6 +27,12 @@ Future<void>getInTheatersMovies() async
 Future<void>getBoxOfficeMovies() async
 {
   boxOfficeList = await HomeApi().getBoxOfficeMovies();
+  notifyListeners();
+}
+
+void addToBookMark()
+{
+  bookMark=true;
   notifyListeners();
 }
 

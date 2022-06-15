@@ -5,6 +5,7 @@ class LoginViewModel extends ChangeNotifier {
   IconData suffix = Icons.visibility_outlined;
   bool isPassword = true;
   String? userId;
+  String? errorMessage;
   void changePasswordVisibility() {
     isPassword = !isPassword;
     suffix =
@@ -16,15 +17,21 @@ class LoginViewModel extends ChangeNotifier {
     required String email,
     required String password,
   }) async {
-    await FirebaseAuth.instance
-        .signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    ).then((value) {
-      print(value.user!.email);
-      print(value.user!.uid);
-      userId = value.user!.uid;
+    try {
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      )
+          .then((value) {
+        userId = value.user!.uid;
+      });
+      errorMessage = '';
+
       notifyListeners();
-    }).catchError((error) {});
+    } on FirebaseAuthException catch (error) {
+      errorMessage = error.message!;
+      notifyListeners();
+    }
   }
 }

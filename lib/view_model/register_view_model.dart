@@ -5,14 +5,13 @@ import 'package:mvvm_demo/models/user_model.dart';
 import 'package:mvvm_demo/resources/constants_manager.dart';
 
 class RegisterViewModel extends ChangeNotifier {
-
   IconData suffix = Icons.visibility_outlined;
   bool isPassword = true;
-
-  void changePasswordVisibility()
-  {
+  String? errorMessage;
+  void changePasswordVisibility() {
     isPassword = !isPassword;
-    suffix = isPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined ;
+    suffix =
+        isPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined;
     notifyListeners();
   }
 
@@ -22,13 +21,19 @@ class RegisterViewModel extends ChangeNotifier {
     required String password,
     required String bio,
   }) async {
-    await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: email, password: password)
-        .then((value) {
-       userCreate(name: name, email: email, bio: bio, uId: value.user!.uid);
-    }).catchError((error) {
-    });
-    notifyListeners();
+    try {
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((value) async {
+        await userCreate(
+            name: name, email: email, bio: bio, uId: value.user!.uid);
+      });
+      errorMessage = '';
+      notifyListeners();
+    } on FirebaseAuthException catch (error) {
+      errorMessage = error.message!;
+      notifyListeners();
+    }
   }
 
   Future<void> userCreate({
@@ -44,16 +49,12 @@ class RegisterViewModel extends ChangeNotifier {
       bio: bio,
     );
 
-   await FirebaseFirestore.instance
+    await FirebaseFirestore.instance
         .collection(AppConstants.userCollection)
         .doc(uId)
         .set(model.toMap())
         .then((value) {})
-        .catchError((error) {
-    });
+        .catchError((error) {});
     notifyListeners();
   }
-
-
-
 }

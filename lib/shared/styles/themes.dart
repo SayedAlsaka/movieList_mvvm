@@ -9,6 +9,7 @@ ThemeData darkTheme = ThemeData(
   cursorColor: ColorManager.white,
   scaffoldBackgroundColor: HexColor('242424'),
 backgroundColor: Colors.black,
+
   cardTheme:  CardTheme(
     color: HexColor('242424'),
   ),
@@ -39,7 +40,7 @@ backgroundColor: Colors.black,
     elevation: 20.0,
     backgroundColor: HexColor('242424'),
   ),
-  textTheme: const TextTheme(
+  textTheme:  TextTheme(
     headline4: TextStyle(
       color: Colors.white
     ),
@@ -88,24 +89,22 @@ ThemeData lightTheme = ThemeData(
     type: BottomNavigationBarType.fixed,
     selectedItemColor: Colors.black,
   ),
-  textTheme: const TextTheme(
+  textTheme:  TextTheme(
     headline4:  TextStyle(
-        color: Colors.black
+        color: ColorManager.black,
     ),
     bodyText1: TextStyle(
       fontSize: 25.0,
       fontWeight: FontWeight.w500,
-      color: Colors.black,
+      color: ColorManager.black,
     ),
     bodyText2:TextStyle(
       fontSize: 15.0,
-      color: Colors.grey,
+      color:ColorManager.black,
     ),
     subtitle1: TextStyle(
       fontSize: 16.0,
-      fontWeight: FontWeight.w600,
-      color: Colors.black,
-      height: 1.3,
+      color: ColorManager.black,
     ),
   ),
 );

@@ -37,33 +37,77 @@ class SettingsView extends StatelessWidget {
                       size: AppSize.s30,
                     ),
                     onPressed: () {
-                      //provider.changeAppMode();
                       appProvider.changeAppMode();
-
                     },
                   ),
                 ],
               ),
+              const SizedBox(
+                height: AppSize.s20,
+              ),
               if (AppConstants.uId == null)
                 defaultButton(
-                  background: Colors.yellow,
+                    background: Colors.yellow,
                     function: () {
                       navigatePush(context, RegisterView());
                     },
                     text: AppStrings.settingButton),
-              if(AppConstants.uId !=null)
+              if (AppConstants.uId != null)
                 defaultButton(
-                  background: Theme.of(context).backgroundColor,
+                    background: Theme.of(context).backgroundColor,
                     textColor: Colors.blue,
-                    width: MediaQuery.of(context).size.width/3,
-                    shape: Border.all(
-                        color: Colors.grey
-                    ),
+                    width: MediaQuery.of(context).size.width / 3,
+                    shape: Border.all(color: Colors.grey),
                     function: () {
                       CashHelper.removeDate(key: 'uId');
                       navigateAndFinish(context, LoginView());
                     },
                     text: AppStrings.signOutButton.toUpperCase()),
+              const SizedBox(
+                height: AppSize.s20,
+              ),
+              if (AppConstants.uId != null)
+                defaultButton(
+                    background: Theme.of(context).backgroundColor,
+                    textColor: Colors.blue,
+                    width: MediaQuery.of(context).size.width / 2,
+                    shape: Border.all(color: Colors.grey),
+                    function: () async{
+                      await provider.deleteAccount(id:AppConstants.uId );
+                      if(provider.errorMessage == '')
+                        {
+                          appProvider.changeIsLoading(true);
+                          CashHelper.removeDate(key: 'uId');
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar(
+                              msg: 'Deleted Successfully',
+                              state: ToastStates.SUCCESS));
+                          appProvider.changeIsLoading(false);
+                          navigateAndFinish(context, LoginView());
+                        }
+                    },
+                    text: AppStrings.deleteAccount),
+              const SizedBox(
+                height: AppSize.s20,
+              ),
+              if (AppConstants.uId != null)
+                defaultButton(
+                    background: Theme.of(context).backgroundColor,
+                    textColor: Colors.blue,
+                    width: 235,
+                    shape: Border.all(color: Colors.grey),
+                    function: () {},
+                    text: AppStrings.deleteSearchRecords),
+              const SizedBox(
+                height: AppSize.s20,
+              ),
+              if (AppConstants.uId != null)
+                defaultButton(
+                    background: Theme.of(context).backgroundColor,
+                    textColor: Colors.blue,
+                    width: 235,
+                    shape: Border.all(color: Colors.grey),
+                    function: () {},
+                    text: AppStrings.deleteBookmarkRecords),
             ],
           ),
         ),
