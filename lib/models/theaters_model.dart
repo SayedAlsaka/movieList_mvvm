@@ -1,17 +1,17 @@
-class SearchModel {
+class TheatersModel {
   int? page;
-  List<SearchResults>? results;
+  List<MoviesResults>? results;
   int? totalPages;
   int? totalResults;
 
-  SearchModel({this.page, this.results, this.totalPages, this.totalResults});
+  TheatersModel({this.page, this.results, this.totalPages, this.totalResults});
 
-  SearchModel.fromJson(Map<String, dynamic> json) {
+  TheatersModel.fromJson(Map<String, dynamic> json) {
     page = json['page'];
     if (json['results'] != null) {
-      results = <SearchResults>[];
+      results = <MoviesResults>[];
       json['results'].forEach((v) {
-        results!.add(new SearchResults.fromJson(v));
+        results!.add(new MoviesResults.fromJson(v));
       });
     }
     totalPages = json['total_pages'];
@@ -30,7 +30,7 @@ class SearchModel {
   }
 }
 
-class SearchResults {
+class MoviesResults {
   bool? adult;
   String? backdropPath;
   List<int>? genreIds;
@@ -46,7 +46,7 @@ class SearchResults {
   dynamic voteAverage;
   int? voteCount;
 
-  SearchResults(
+  MoviesResults(
       {this.adult,
         this.backdropPath,
         this.genreIds,
@@ -62,7 +62,7 @@ class SearchResults {
         this.voteAverage,
         this.voteCount});
 
-  SearchResults.fromJson(Map<String, dynamic> json) {
+  MoviesResults.fromJson(Map<String, dynamic> json) {
     adult = json['adult'];
     backdropPath = json['backdrop_path'];
     genreIds = json['genre_ids'].cast<int>();
@@ -98,4 +98,3 @@ class SearchResults {
     return data;
   }
 }
-

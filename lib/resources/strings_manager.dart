@@ -1,6 +1,7 @@
 class AppStrings {
   static const noRouteFound = 'No Route Found';
   static const comingSoon = 'Coming soon';
+  static const watchList = 'Your watchlist';
   static const seeAll = 'SEE ALL';
   static const inTheaters = 'In theaters';
   static const boxOffice = 'Top box office (US)';

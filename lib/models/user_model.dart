@@ -6,7 +6,7 @@ class UserModel
  String? email;
  String? bio;
  String? location;
- String? bookMarks;
+ List<dynamic>? bookMarks;
 
  UserModel(
       {this.id,
@@ -25,7 +25,7 @@ name=json['name'];
 email=json['email'];
 bio=json['bio'];
 location=json['location'];
-bookMarks=json['bookMarks'];
+bookMarks = json['bookMarks'];
 
  }
 

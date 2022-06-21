@@ -1,90 +1,75 @@
 import 'dart:convert';
-import 'package:mvvm_demo/models/box_office_model.dart';
-import 'package:mvvm_demo/models/coming_soon_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:mvvm_demo/models/in_theaters_model.dart';
+import 'package:mvvm_demo/models/movie_model.dart';
 import 'package:mvvm_demo/models/search_model.dart';
-import 'package:mvvm_demo/models/trailer.dart';
-import 'package:mvvm_demo/models/youtube_trailer.dart';
+import 'package:mvvm_demo/models/theaters_model.dart';
+import 'package:mvvm_demo/models/up_coming_model.dart';
 import 'package:mvvm_demo/resources/constants_manager.dart';
 
+import '../models/video_model.dart';
+
 class HomeApi {
-  late ComingSoonModel comingSoonModel;
-  late InTheatersModel inTheatersModel;
-  late BoxOfficeModel boxOfficeModel;
-  late YoutubeTrailer youtubeTrailer;
-  late Trailer trailer;
-  Future<List<ItemsC>> getComingSoonMovies() async {
-    await http.get(Uri.parse(AppConstants.urlComingSoon)).then((value) {
-      comingSoonModel = ComingSoonModel.fromJson(json.decode(value.body));
-    }).catchError((error) {
+  late UpComingModel upComingModel;
+  late TheatersModel theatersModel;
 
-    });
-    List<ItemsC> moviesList = comingSoonModel.items!;
+  Future<List<Movies>> getUpComingMovies() async {
+    await http.get(Uri.parse(AppConstants.urlUpComing)).then((value) {
+      upComingModel = UpComingModel.fromJson(json.decode(value.body));
+    }).catchError((error) {});
+    List<Movies>? moviesList = upComingModel.results!;
     return moviesList;
   }
 
-  Future<List<ItemsT>> getInTheatersMovies() async {
-    await http.get(Uri.parse(AppConstants.urlInTheaters)).then((value) {
-      inTheatersModel = InTheatersModel.fromJson(json.decode(value.body));
-
-    }).catchError((error) {
-
-    });
-    List<ItemsT> moviesList = inTheatersModel.items!;
+  Future<List<MoviesResults>> getTheatersMovies() async {
+    await http.get(Uri.parse(AppConstants.urlTheaters)).then((value) {
+      theatersModel = TheatersModel.fromJson(json.decode(value.body));
+    }).catchError((error) {});
+    List<MoviesResults> moviesList = theatersModel.results!;
     return moviesList;
   }
 
-  Future<List<Items>> getBoxOfficeMovies() async {
-    await http.get(Uri.parse(AppConstants.urlTopRatedMovies)).then((value) {
-      boxOfficeModel = BoxOfficeModel.fromJson(json.decode(value.body));
-
-    }).catchError((error) {
-
-    });
-    List<Items> moviesList = boxOfficeModel.items!;
-    return moviesList;
-  }
-
-  Future<String?> getVideoId(movieID) async {
-    await http.get(Uri.parse(AppConstants.urlVideoId + movieID)).then((value) {
-      youtubeTrailer = YoutubeTrailer.fromJson(json.decode(value.body));
-    }).catchError((error) {
-
-    });
-    return youtubeTrailer.videoId;
-  }
-
-  Future<String?> getVideoUrl(movieID) async {
-    await getVideoId(movieID);
-    await http
-        .get(Uri.parse(AppConstants.urlVideoUrl + youtubeTrailer.videoId!))
-        .then((value) {
-      trailer = Trailer.fromJson(json.decode(value.body));
-    }).catchError((error) {
-
-    });
-    return trailer.videos![1].url;
-  }
 }
 
 class SearchApi {
-  SearchModel? searchModel;
-   List<Results> movies =[];
-   Future<List<Results>?> search(String query) async {
-   await http.get(Uri.parse(AppConstants.urlSearch+query)).then((value) {
-     searchModel = SearchModel.fromJson(json.decode(value.body));
-       for (int i=0; i<searchModel!.results!.length; i++)
-       {
-         if(searchModel!.results![i].image !='') {
-           movies.add(searchModel!.results![i]);
-         }
-       }
-       movies = movies.where((element) => element.title!.toLowerCase().contains(query.toLowerCase())).toList();
+  late SearchModel searchModel;
 
-   }).catchError((error){
+  Future<List<SearchResults>> search(query) async {
+    await http.get(Uri.parse('https://api.themoviedb.org/3/search/movie?api_key=${AppConstants.apiKey1}&language=en-US&query=$query&page=1&include_adult=false#')).then((value) {
+      searchModel = SearchModel.fromJson(json.decode(value.body));
+      for(int i=0; i<searchModel.results!.length; i++)
+        {
+          print(searchModel.results![i].title);
+        }
+    }).catchError((error) {
+      print(error.toString());
+    });
+    List<SearchResults> movies = searchModel.results!;
+    return movies;
+  }
+}
 
-   });
-   return movies;
+class MovieApi {
+  late MovieModel movieModel;
+  late VideoModel videoModel;
+  Future<MovieModel> getMovieDetails(movieID) async {
+    await http
+        .get(Uri.parse(
+            'https://api.themoviedb.org/3/movie/$movieID?api_key=${AppConstants.apiKey1}&language=en-US'))
+        .then((value) {
+      movieModel = MovieModel.fromJson(json.decode(value.body));
+    }).catchError((error) {});
+    MovieModel moviesList = movieModel;
+    return moviesList;
+  }
+
+  Future<String> getVideoID(movieID) async {
+    await http
+        .get(Uri.parse(
+            'https://api.themoviedb.org/3/movie/$movieID/videos?api_key=${AppConstants.apiKey1}&language=en-US'))
+        .then((value) {
+      videoModel = VideoModel.fromJson(json.decode(value.body));
+    }).catchError((error) {});
+    String videoID = videoModel.results![0].key!;
+    return videoID;
   }
 }

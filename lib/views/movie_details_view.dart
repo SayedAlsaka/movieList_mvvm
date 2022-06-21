@@ -4,35 +4,37 @@ import 'package:flutter/material.dart';
 import 'package:mvvm_demo/resources/colors_manager.dart';
 import 'package:mvvm_demo/resources/values_manager.dart';
 import 'package:mvvm_demo/shared/components.dart';
-import 'package:video_player/video_player.dart';
-import '../resources/assets_manager.dart';
+import 'package:provider/provider.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../resources/constants_manager.dart';
+import '../view_model/profile_view_model.dart';
 
 class MovieDetailsView extends StatefulWidget {
   String id;
   dynamic movie;
   String category;
-  MovieDetailsView({Key? key, required this.movie, required this.category,required this.id})
+  MovieDetailsView(
+      {Key? key, required this.movie, required this.category, required this.id})
       : super(key: key);
 
   @override
   State<MovieDetailsView> createState() => _MovieDetailsViewState();
 }
 
-
 class _MovieDetailsViewState extends State<MovieDetailsView> {
-  late VideoPlayerController _controller;
-  late Future<void> _initializeVideoPlayerFuture;
-  double opacity=1.0;
+  late YoutubePlayerController _controller;
   @override
   void initState() {
-    print(widget.id);
-    _controller = VideoPlayerController.network(widget.id);
-    _initializeVideoPlayerFuture = _controller.initialize();
-    _controller.setLooping(true);
-    _controller.setVolume(1.0);
     super.initState();
+    _controller = YoutubePlayerController(initialVideoId: widget.id);
   }
+
+  @override
+  void deactivate() {
+    _controller.pause();
+    super.deactivate();
+  }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -41,6 +43,7 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
 
   @override
   Widget build(BuildContext context) {
+    var profileProvider = Provider.of<ProfileViewModel>(context,listen: false);
     return Scaffold(
       appBar: AppBar(
         elevation: AppSize.s1,
@@ -70,62 +73,24 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
                   height: AppSize.s5,
                 ),
                 Text(
-                  '${widget.movie.year} ${widget.movie.contentRating} ${widget.movie.runtimeStr}',
+                  widget.movie.releaseDate,
                   style: Theme.of(context).textTheme.bodyText2,
                 ),
               ],
             ),
           ),
-          FutureBuilder(
-            future: _initializeVideoPlayerFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      InkWell(
-                          onTap: (){
-                            setState(() {
-                              opacity=1.0;
-                              Future.delayed(const Duration(seconds: 3)).then((value) {
-                                setState(() {
-                                  if (_controller.value.isPlaying) {
-                                    opacity=0.0;
-                                  } else {
-                                    opacity=1.0;
-                                  }
-                                });
-                              });
-                            });
-
-                          },
-                          child: VideoPlayer(_controller)),
-                      MaterialButton(
-                        onPressed: () {
-                          setState(() {
-                            if (_controller.value.isPlaying) {
-                              _controller.pause();
-                              opacity=1.0;
-                            } else {
-                              _controller.play();
-                              opacity=0.0;
-                            }
-                          });
-                        },
-                        child: Opacity(opacity: opacity,
-                            child: Icon(_controller.value.isPlaying ? Icons.pause : Icons.play_arrow , color: Colors.white,size: 70.0,)),
-                      ),
-                    ],
-                  ),
-                );
-              } else {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            },
+          SizedBox(
+            height: AppConstants.homeCarouselCoverHeight,
+            child: YoutubePlayerBuilder(
+              builder: (context, player) => ListView(
+                children: [
+                  player,
+                ],
+              ),
+              player: YoutubePlayer(
+                controller: _controller,
+              ),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(AppPadding.p20),
@@ -135,12 +100,12 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      height: AppConstants.carouselHeight2 + 20,
+                      height: AppConstants.movieDetailsHeight,
                       width: AppConstants.carouselWidth,
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           image: NetworkImage(
-                            widget.movie.image,
+                            'https://image.tmdb.org/t/p/w780${widget.movie.posterPath}',
                           ),
                           fit: BoxFit.cover,
                         ),
@@ -158,23 +123,34 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
                             child: ListView.separated(
                                 physics: const ClampingScrollPhysics(),
                                 shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                                itemBuilder: (context,index)=> defaultButton(
-                                    background: Theme.of(context).backgroundColor,
-                                    style: Theme.of(context).textTheme.subtitle1!,
-                                    textColor: Theme.of(context).textTheme.bodyText1!.color!,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (context, index) => defaultButton(
+                                    background:
+                                        Theme.of(context).backgroundColor,
+                                    style:
+                                        Theme.of(context).textTheme.subtitle1!,
+                                    textColor: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1!
+                                        .color!,
                                     width: 105,
-                                    shape: Border.all(
-                                        color: Colors.grey
+                                    shape: Border.all(color: Colors.grey),
+                                    function: () {},
+                                    text: widget.movie.genres[index].name),
+                                separatorBuilder: (_, context) =>
+                                    const SizedBox(
+                                      width: 5.0,
                                     ),
-                                    function: () {
-                                    },
-                                    text:widget.movie.genreList[index].value),
-                                separatorBuilder: (_,context) => const SizedBox(width: 5.0,),
-                                itemCount: widget.movie.genreList.length),
+                                itemCount: widget.movie.genres.length),
                           ),
-                          const SizedBox(height: AppSize.s5,),
-                          Text(widget.movie.plot,overflow: TextOverflow.ellipsis,maxLines: 7,),
+                          const SizedBox(
+                            height: AppSize.s5,
+                          ),
+                          Text(
+                            widget.movie.overview,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 7,
+                          ),
                         ],
                       ),
                     ),
@@ -200,7 +176,7 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                   Text(
-                    'Release Date ${widget.movie.releaseState}, ${widget.movie.year}',
+                    'Release Date ${widget.movie.releaseDate}',
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ],
@@ -208,14 +184,15 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
             ),
           myDivider(),
           const SizedBox(
-            height: 10.0,
+            height: AppSize.s10,
           ),
+        if(profileProvider.model.bookMarks!.contains(widget.movie.id) == false)
           Center(
               child: defaultButton(
                   function: () {},
                   text: '+ Add to Watchlist',
                   textColor: Colors.black,
-                  style: const TextStyle(color: Colors.black , fontSize: 18.0),
+                  style: const TextStyle(color: Colors.black, fontSize: 18.0),
                   background: ColorManager.yellow,
                   width: 350)),
         ],

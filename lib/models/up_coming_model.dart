@@ -1,17 +1,24 @@
-class SearchModel {
+class UpComingModel {
+  Dates? dates;
   int? page;
-  List<SearchResults>? results;
+  List<Movies>? results;
   int? totalPages;
   int? totalResults;
 
-  SearchModel({this.page, this.results, this.totalPages, this.totalResults});
+  UpComingModel(
+      {this.dates,
+        this.page,
+        this.results,
+        this.totalPages,
+        this.totalResults});
 
-  SearchModel.fromJson(Map<String, dynamic> json) {
+  UpComingModel.fromJson(Map<String, dynamic> json) {
+    dates = json['dates'] != null ? new Dates.fromJson(json['dates']) : null;
     page = json['page'];
     if (json['results'] != null) {
-      results = <SearchResults>[];
+      results = <Movies>[];
       json['results'].forEach((v) {
-        results!.add(new SearchResults.fromJson(v));
+        results!.add(new Movies.fromJson(v));
       });
     }
     totalPages = json['total_pages'];
@@ -20,6 +27,9 @@ class SearchModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.dates != null) {
+      data['dates'] = this.dates!.toJson();
+    }
     data['page'] = this.page;
     if (this.results != null) {
       data['results'] = this.results!.map((v) => v.toJson()).toList();
@@ -30,7 +40,26 @@ class SearchModel {
   }
 }
 
-class SearchResults {
+class Dates {
+  String? maximum;
+  String? minimum;
+
+  Dates({this.maximum, this.minimum});
+
+  Dates.fromJson(Map<String, dynamic> json) {
+    maximum = json['maximum'];
+    minimum = json['minimum'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['maximum'] = this.maximum;
+    data['minimum'] = this.minimum;
+    return data;
+  }
+}
+
+class Movies {
   bool? adult;
   String? backdropPath;
   List<int>? genreIds;
@@ -46,7 +75,7 @@ class SearchResults {
   dynamic voteAverage;
   int? voteCount;
 
-  SearchResults(
+  Movies(
       {this.adult,
         this.backdropPath,
         this.genreIds,
@@ -62,7 +91,7 @@ class SearchResults {
         this.voteAverage,
         this.voteCount});
 
-  SearchResults.fromJson(Map<String, dynamic> json) {
+  Movies.fromJson(Map<String, dynamic> json) {
     adult = json['adult'];
     backdropPath = json['backdrop_path'];
     genreIds = json['genre_ids'].cast<int>();
@@ -98,4 +127,3 @@ class SearchResults {
     return data;
   }
 }
-

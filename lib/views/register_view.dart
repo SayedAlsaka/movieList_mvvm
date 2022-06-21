@@ -25,7 +25,9 @@ class RegisterView extends StatelessWidget {
     var provider = Provider.of<RegisterViewModel>(context, listen: false);
     var appProvider = Provider.of<AppViewModel>(context, listen: false);
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        elevation: 0.0,
+      ),
       body: ModalProgressHUD(
         inAsyncCall: Provider.of<AppViewModel>(context).isChange,
         child: Center(

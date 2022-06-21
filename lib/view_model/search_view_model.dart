@@ -5,11 +5,11 @@ import '../models/search_model.dart';
 
 class SearchViewModel extends ChangeNotifier {
 
-List<Results> resultsList=[];
+List<SearchResults> resultsList=[];
 
-Future<void> search(expression) async
+Future<void> search(query) async
 {
- resultsList= await SearchApi().search(expression) as List<Results>;
+ await SearchApi().search(query);
  notifyListeners();
 }
 }

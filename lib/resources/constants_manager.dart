@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 
 class AppConstants {
-  static const apiKey = 'k_2eqt4crl';
-  static const urlComingSoon = 'https://imdb-api.com/en/API/ComingSoon/$apiKey';
-  static const urlInTheaters = 'https://imdb-api.com/en/API/InTheaters/$apiKey';
-  static const urlTopRatedMovies = 'https://imdb-api.com/en/API/BoxOffice/$apiKey';
-  static const urlVideoId = 'https://imdb-api.com/en/API/YouTubeTrailer/$apiKey/';
-  static const urlVideoUrl = 'https://imdb-api.com/en/API/YouTube/$apiKey/';
-  static const urlSearch = 'https://imdb-api.com/en/API/SearchAll/$apiKey/';
+
+  static const apiKey1 = '6b79cd1c98a3886c36ed5469db42672c';
+  static const urlUpComing = 'https://api.themoviedb.org/3/movie/upcoming?api_key=$apiKey1&language=en-US&page=1';
+  static const urlTheaters = 'https://api.themoviedb.org/3/movie/popular?api_key=$apiKey1&language=en-US&page=1';
+  static const urlSearch = 'https://api.themoviedb.org/3/search/movie?api_key=$apiKey1&language=en-US&query=Avengers&page=1&include_adult=false#';
   static const userCollection = 'users';
-  static const  carouselHeight1 = 300.0;
+  static const  homeCarouselContainerHeight = 280.0;
+  static const  homeCarouselCoverHeight = 220.0;
   static const bottomPosition = -50;
-  static const carouselHeight2 = 140.0;
-  static const carouselHeight3 = 220.0;
+  static const movieDetailsHeight = 160.0;
   static const carouselWidth = 100.0;
   static const cardHeight = 420.0;
   static const filmListHeight = 350.0;

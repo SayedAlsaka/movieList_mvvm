@@ -6,73 +6,67 @@ import 'package:mvvm_demo/shared/styles/themes.dart';
 import 'package:mvvm_demo/view_model/app_view_model.dart';
 import 'package:mvvm_demo/view_model/home_view_model.dart';
 import 'package:mvvm_demo/view_model/login_view_model.dart';
+import 'package:mvvm_demo/view_model/movie_details_view_model.dart';
 import 'package:mvvm_demo/view_model/profile_view_model.dart';
 import 'package:mvvm_demo/view_model/register_view_model.dart';
 import 'package:mvvm_demo/view_model/search_view_model.dart';
 import 'package:mvvm_demo/view_model/settings_view_model.dart';
-import 'package:mvvm_demo/view_model/video_view_model.dart';
 import 'package:mvvm_demo/views/layout_view.dart';
 import 'package:mvvm_demo/views/login_view.dart';
 import 'package:provider/provider.dart';
 
-
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await CashHelper.init();
   AppConstants.isDark = CashHelper.getBoolean(key: 'isDark');
-  if (AppConstants.isDark ==null)
-    {
-      AppConstants.isDark = false;
-    }
-  else {  AppConstants.isDark = CashHelper.getBoolean(key: 'isDark');}
+  if (AppConstants.isDark == null) {
+    AppConstants.isDark = false;
+  } else {
+    AppConstants.isDark = CashHelper.getBoolean(key: 'isDark');
+  }
 
   AppConstants.uId = CashHelper.getData(key: 'uId');
-   print(AppConstants.uId);
+  print(AppConstants.uId);
   print(AppConstants.isDark);
-  if (AppConstants.uId ==null)
-  {
+  if (AppConstants.uId == null) {
     AppConstants.widget = LoginView();
-  }
-  else {
+  } else {
     AppConstants.widget = MainView();
   }
 
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (_) => HomeViewModel()),
-    ChangeNotifierProvider(create: (_) => SettingsViewModel()),
-    ChangeNotifierProvider(create: (_) => RegisterViewModel()),
-    ChangeNotifierProvider(create: (_) => LoginViewModel()),
-    ChangeNotifierProvider(create: (_) => ProfileViewModel()),
-    ChangeNotifierProvider(create: (_) => AppViewModel()),
-    ChangeNotifierProvider(create: (_) => VideoViewModel()),
-    ChangeNotifierProvider(create: (_) => SearchViewModel()),
-  ],
-  child:  MyApp(
-    startWidget:AppConstants.widget,
-  )));
-
+  runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => HomeViewModel()),
+        ChangeNotifierProvider(create: (_) => SettingsViewModel()),
+        ChangeNotifierProvider(create: (_) => RegisterViewModel()),
+        ChangeNotifierProvider(create: (_) => LoginViewModel()),
+        ChangeNotifierProvider(create: (_) => ProfileViewModel()),
+        ChangeNotifierProvider(create: (_) => AppViewModel()),
+        ChangeNotifierProvider(create: (_) => SearchViewModel()),
+        ChangeNotifierProvider(create: (_) => MovieDetailsViewModel()),
+      ],
+      child: MyApp(
+        startWidget: AppConstants.widget,
+      )));
 }
 
 class MyApp extends StatelessWidget {
   final Widget? startWidget;
-  MyApp({
-    this.startWidget
-  });
+  MyApp({this.startWidget});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return   MaterialApp(
+
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: lightTheme,
       darkTheme: darkTheme,
-      themeMode: Provider.of<AppViewModel>(context).isDark ? ThemeMode.dark : ThemeMode.light,
+      themeMode: Provider.of<AppViewModel>(context).isDark
+          ? ThemeMode.dark
+          : ThemeMode.light,
       home: startWidget,
     );
   }
-  
 }
-
-
-

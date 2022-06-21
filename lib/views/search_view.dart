@@ -17,7 +17,7 @@ class SearchView extends StatefulWidget {
 }
 
 class _SearchViewState extends State<SearchView> {
-  List<Results> movies=[];
+  List<SearchResults> movies=[];
   String query = '';
   Timer? debouncer;
   @override
@@ -28,26 +28,26 @@ class _SearchViewState extends State<SearchView> {
           buildSearch(),
           if(query !='')
             FutureBuilder(
-            future: Provider.of<SearchViewModel>(context,listen: false).search(query),
-            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-              if(snapshot.connectionState == ConnectionState.done)
-              {
-                return Expanded(
-                  child: ListView.builder(
-                    itemCount: Provider.of<SearchViewModel>(context).resultsList.length,
-                    itemBuilder: (context, index) {
-                      return buildBook(Provider.of<SearchViewModel>(context).resultsList[index]);
-                    },
-                  ),
-                );
-              }
-              else
-              {
-                return const Center(child: CircularProgressIndicator());
-              }
-            },
+              future: Provider.of<SearchViewModel>(context,listen: false).search(query),
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                if(snapshot.connectionState == ConnectionState.done)
+                {
+                  return Expanded(
+                    child: ListView.builder(
+                      itemCount: Provider.of<SearchViewModel>(context).resultsList.length,
+                      itemBuilder: (context, index) {
+                        return buildBook(Provider.of<SearchViewModel>(context).resultsList[index]);
+                      },
+                    ),
+                  );
+                }
+                else
+                {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              },
 
-          ),
+            ),
         ],
       ),
     );
@@ -63,20 +63,27 @@ class _SearchViewState extends State<SearchView> {
 
     setState(() {
       this.query = query;
-      this.movies = movies!;
+      this.movies = movies;
     });
   }
-  Widget buildBook(Results movie) => ListTile(
+  Widget buildBook(SearchResults movie) => ListTile(
     leading: Image.network(
-      movie.image!,
+      movie.posterPath!,
       fit: BoxFit.cover,
       width: 50,
       height: 80,
     ),
     title: Text(movie.title!),
-    subtitle: Text(movie.description!,style: TextStyle(color: ColorManager.grey ),),
+    subtitle: Text(movie.releaseDate!,style: TextStyle(color: ColorManager.grey ),),
   );
 }
+
+
+
+
+
+
+
 
 // import 'dart:async';
 // import 'package:flutter/material.dart';
@@ -172,4 +179,26 @@ class _SearchViewState extends State<SearchView> {
 //     title: Text(book.title),
 //     subtitle: Text(book.author),
 //   );
+// }
+
+// import 'package:flutter/material.dart';
+// import 'package:mvvm_demo/view_model/search_view_model.dart';
+// import 'package:provider/provider.dart';
+//
+// class SearchView extends StatelessWidget {
+//   const SearchView({Key? key}) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     var searchProvider = Provider.of<SearchViewModel>(context, listen: false);
+//     return Scaffold(
+//       body: Column(
+//         children: [
+//           Center(child: TextButton(onPressed: (){
+//             searchProvider.search();
+//           }, child: Text('go'))),
+//         ],
+//       ),
+//     );
+//   }
 // }

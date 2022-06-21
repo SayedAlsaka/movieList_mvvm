@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:mvvm_demo/models/box_office_model.dart';
 import 'package:mvvm_demo/resources/colors_manager.dart';
-import 'package:mvvm_demo/view_model/video_view_model.dart';
+import 'package:mvvm_demo/view_model/movie_details_view_model.dart';
 import 'package:mvvm_demo/views/movie_details_view.dart';
 import 'package:provider/provider.dart';
-
-import '../models/coming_soon_model.dart';
 import '../resources/assets_manager.dart';
 import '../resources/constants_manager.dart';
 import '../resources/strings_manager.dart';
 import '../resources/values_manager.dart';
-import '../view_model/home_view_model.dart';
+import '../view_model/profile_view_model.dart';
 
 void navigatePush(context, widget) => Navigator.push(
       context,
@@ -47,7 +44,7 @@ Widget defaultButton({
   Color background = Colors.grey,
   Color textColor = Colors.black,
   ShapeBorder? shape,
-  TextStyle style =const TextStyle(
+  TextStyle style = const TextStyle(
     color: Colors.blue,
     fontSize: 18.0,
   ),
@@ -116,11 +113,12 @@ Widget defaultFormField({
       onChanged: onChange as void Function(String)?,
     );
 
-Widget cardMovie({
-  required context,
-  required cardTitle,
-  required List movies,
-}) =>
+Widget cardMovie(
+        {required context,
+        required cardTitle,
+        required List movies,
+        required profileProvider,
+        required homeProvider}) =>
     Card(
       elevation: AppSize.s10,
       child: SizedBox(
@@ -167,9 +165,24 @@ Widget cardMovie({
                             topLeft: Radius.circular(AppSize.s10),
                             topRight: Radius.circular(AppSize.s10))),
                     child: InkWell(
-                      onTap: ()async{
-                        await Provider.of<VideoViewModel>(context,listen: false).getVideoUrl(movies[index].id);
-                        navigatePush(context, MovieDetailsView(movie: movies[index] , category: cardTitle, id: Provider.of<VideoViewModel>(context,listen: false).videoUrl,));
+                      onTap: () async {
+                        await Provider.of<MovieDetailsViewModel>(context,
+                                listen: false)
+                            .getVideoID(movies[index].id);
+                        await Provider.of<MovieDetailsViewModel>(context,
+                                listen: false)
+                            .getMovieDetails(movies[index].id);
+                        navigatePush(
+                            context,
+                            MovieDetailsView(
+                              movie: Provider.of<MovieDetailsViewModel>(context,
+                                      listen: false)
+                                  .movieModel,
+                              category: cardTitle,
+                              id: Provider.of<MovieDetailsViewModel>(context,
+                                      listen: false)
+                                  .videoID,
+                            ));
                       },
                       child: Column(
                         children: [
@@ -183,7 +196,8 @@ Widget cardMovie({
                                   image: DecorationImage(
                                       // image: NetworkImage(
                                       //     provider.comingSoonList[index].image!),
-                                      image: NetworkImage(movies[index].image!),
+                                      image: NetworkImage(
+                                          'https://image.tmdb.org/t/p/w780${movies[index].posterPath}'),
                                       fit: BoxFit.fill),
                                 ),
                                 width: (MediaQuery.of(context).size.width /
@@ -191,23 +205,99 @@ Widget cardMovie({
                                     50,
                                 height: 220,
                               ),
-                              Positioned(
-                                left: -12,
-                                top: -3,
-                                child: Container(
-                                  decoration: const BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(AppSize.s20),
+                              if (profileProvider.model.bookMarks.isEmpty)
+                                Positioned(
+                                  left: -13,
+                                  top: -8,
+                                  child: InkWell(
+                                    onTap: () async {
+                                      homeProvider.addToBookMark();
+                                      await profileProvider.getUserData();
+                                      await homeProvider.updateBookMarkUser(
+                                          bookMarks: movies[index].id!,
+                                          id: Provider.of<ProfileViewModel>(
+                                              context,
+                                              listen: false)
+                                              .model
+                                              .id,
+                                          context: context);
+                                    },
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.bookmark_rounded,
+                                          color: ColorManager.grey,
+                                          size: 60,
+                                        ),
+                                        Icon(Icons.add,
+                                            color: ColorManager.black),
+                                      ],
                                     ),
-                                    image: DecorationImage(
-                                        image:
-                                            AssetImage(ImageAssets.bookmarkLogo),
-                                        fit: BoxFit.fill),
                                   ),
-                                  width: 60,
-                                  height: 50,
                                 ),
-                              ),
+                                if (Provider.of<ProfileViewModel>(context).model.bookMarks!.isNotEmpty && Provider.of<ProfileViewModel>(context).model.bookMarks!.contains(movies[index].id) == false)
+                                  Positioned(
+                                    left: -13,
+                                    top: -8,
+                                    child: InkWell(
+                                      onTap: () async {
+                                        homeProvider.addToBookMark();
+                                        await profileProvider.getUserData();
+                                        await homeProvider.updateBookMarkUser(
+                                            bookMarks: movies[index].id!,
+                                            id: Provider.of<ProfileViewModel>(
+                                                    context,
+                                                    listen: false)
+                                                .model
+                                                .id,
+                                            context: context);
+                                      },
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.bookmark_rounded,
+                                            color: ColorManager.grey,
+                                            size: 60,
+                                          ),
+                                          Icon(Icons.add,
+                                              color: ColorManager.black),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                if (Provider.of<ProfileViewModel>(context).model.bookMarks!.isNotEmpty &&Provider.of<ProfileViewModel>(context).model.bookMarks!.contains(movies[index].id) == true)
+                                  Positioned(
+                                    left: -13,
+                                    top: -8,
+                                    child: InkWell(
+                                      onTap: () async {
+                                        homeProvider.removeFromBookMark();
+                                        await profileProvider.getUserData();
+                                        await homeProvider.removeBookMarkUser(
+                                            bookMarks: movies[index].id!,
+                                            id: Provider.of<ProfileViewModel>(
+                                                    context,
+                                                    listen: false)
+                                                .model
+                                                .id,
+                                            context: context);
+                                      },
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.bookmark_rounded,
+                                            color: ColorManager.yellow,
+                                            size: 60,
+                                          ),
+                                          Icon(Icons.done,
+                                              color: ColorManager.black),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                             ],
                           ),
                           const SizedBox(
@@ -218,21 +308,35 @@ Widget cardMovie({
                               padding: const EdgeInsets.only(left: AppSize.s5),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  // Text(provider.comingSoonList[index].title!),
                                   Text(
                                     movies[index].title!,
-                                    style: Theme.of(context).textTheme.subtitle1,
+                                    style:
+                                        Theme.of(context).textTheme.subtitle1,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
                                   ),
-                                  Row(
-                                    children: [
-                                      //Text('${provider.comingSoonList[index].year} ${provider.comingSoonList[index].contentRating}',style: TextStyle(color: Colors.grey[700]),),
-                                      Text(
-                                        '${movies[index].year} ${movies[index].contentRating}',
-                                        style: TextStyle(color: Colors.grey[700]),
-                                      ),
-                                    ],
+                                  if (movies[index].voteAverage != 0)
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.star,
+                                          color: ColorManager.yellow,
+                                          size: AppSize.s20,
+                                        ),
+                                        const SizedBox(
+                                          width: AppSize.s5,
+                                        ),
+                                        Text(
+                                          '${movies[index].voteAverage}',
+                                        ),
+                                      ],
+                                    ),
+                                  Text(
+                                    movies[index].releaseDate!,
+                                    style: TextStyle(color: Colors.grey[700]),
                                   ),
                                 ],
                               ),
@@ -254,7 +358,7 @@ Widget cardMovie({
 Widget boxOfficeCard({
   required context,
   required cardTitle,
-  required List<Items> movies,
+  required List movies,
 }) =>
     Card(
       elevation: AppSize.s10,
@@ -311,8 +415,7 @@ Widget boxOfficeCard({
                     ),
                     Expanded(
                       child: InkWell(
-                        onTap: (){
-                        },
+                        onTap: () {},
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -339,12 +442,11 @@ Widget boxOfficeCard({
       ),
     );
 
-Widget myDivider ()=> Container(
-  width: double.infinity,
-  height: 1.0,
-  color: Colors.grey[400],
-);
-
+Widget myDivider() => Container(
+      width: double.infinity,
+      height: 1.0,
+      color: Colors.grey[400],
+    );
 
 enum ToastStates { SUCCESS, ERROR, WARNING }
 
@@ -378,3 +480,90 @@ Color chooseToastColor(ToastStates state) {
   }
   return color;
 }
+
+Widget bookMarkLogoAdd ({
+  required profileProvider,
+  required provider,
+  required item,
+  required context,
+}) => Positioned(
+  left: -13,
+  top: -8,
+  child: InkWell(
+    onTap: () async {
+      await profileProvider
+          .getUserData();
+      await provider
+          .updateBookMarkUser(
+          bookMarks:
+          item.id!,
+          id: Provider.of<
+              ProfileViewModel>(
+              context,
+              listen:
+              false)
+              .model
+              .id,
+          context: context);
+    },
+    child: Stack(
+      alignment:
+      Alignment.center,
+      children: [
+        Icon(
+          Icons
+              .bookmark_rounded,
+          color:
+          ColorManager.grey,
+          size: 60,
+        ),
+        Icon(Icons.add,
+            color: ColorManager
+                .black),
+      ],
+    ),
+  ),
+);
+Widget bookMarkLogoRemove({
+  required profileProvider,
+  required provider,
+  required item,
+  required context,
+}) => Positioned(
+  left: -13,
+  top: -8,
+  child: InkWell(
+    onTap: () async {
+      await profileProvider
+          .getUserData();
+      await provider
+          .removeBookMarkUser(
+          bookMarks:
+          item.id!,
+          id: Provider.of<
+              ProfileViewModel>(
+              context,
+              listen:
+              false)
+              .model
+              .id,
+          context: context);
+    },
+    child: Stack(
+      alignment:
+      Alignment.center,
+      children: [
+        Icon(
+          Icons
+              .bookmark_rounded,
+          color:
+          ColorManager.yellow,
+          size: 60,
+        ),
+        Icon(Icons.done,
+            color: ColorManager
+                .black),
+      ],
+    ),
+  ),
+);
