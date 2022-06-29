@@ -2,19 +2,20 @@
 
 import 'package:flutter/material.dart';
 import 'package:mvvm_demo/resources/colors_manager.dart';
+import 'package:mvvm_demo/resources/strings_manager.dart';
 import 'package:mvvm_demo/resources/values_manager.dart';
 import 'package:mvvm_demo/shared/components.dart';
 import 'package:provider/provider.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../resources/constants_manager.dart';
+import '../view_model/home_view_model.dart';
 import '../view_model/profile_view_model.dart';
 
 class MovieDetailsView extends StatefulWidget {
   String id;
   dynamic movie;
-  String category;
-  MovieDetailsView(
-      {Key? key, required this.movie, required this.category, required this.id})
+  String? category;
+  MovieDetailsView({Key? key, required this.movie, category, required this.id})
       : super(key: key);
 
   @override
@@ -43,7 +44,8 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    var profileProvider = Provider.of<ProfileViewModel>(context,listen: false);
+    var profileProvider = Provider.of<ProfileViewModel>(context, listen: false);
+    var homeProvider = Provider.of<HomeViewModel>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         elevation: AppSize.s1,
@@ -105,7 +107,7 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           image: NetworkImage(
-                            'https://image.tmdb.org/t/p/w780${widget.movie.posterPath}',
+                            '${AppStrings.imagePath}${widget.movie.posterPath}',
                           ),
                           fit: BoxFit.cover,
                         ),
@@ -116,30 +118,35 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
                     ),
                     Expanded(
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
-                            height: 30,
+                            height: AppSize.s30,
                             child: ListView.separated(
                                 physics: const ClampingScrollPhysics(),
                                 shrinkWrap: true,
                                 scrollDirection: Axis.horizontal,
-                                itemBuilder: (context, index) => defaultButton(
-                                    background:
-                                        Theme.of(context).backgroundColor,
-                                    style:
-                                        Theme.of(context).textTheme.subtitle1!,
-                                    textColor: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1!
-                                        .color!,
-                                    width: 105,
-                                    shape: Border.all(color: Colors.grey),
-                                    function: () {},
-                                    text: widget.movie.genres[index].name),
+                                itemBuilder: (context, index) => OutlinedButton(
+                                      onPressed: () {},
+                                      child: Text(
+                                        widget.movie.genres[index].name,
+                                        style: TextStyle(
+                                            color: ColorManager.black),
+                                      ),
+                                      style: OutlinedButton.styleFrom(
+                                        side: BorderSide(
+                                            color: Colors.grey[500]!),
+                                        textStyle:
+                                            const TextStyle(color: Colors.red),
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.zero,
+                                        ),
+                                      ),
+                                    ),
                                 separatorBuilder: (_, context) =>
                                     const SizedBox(
-                                      width: 5.0,
+                                      width: AppSize.s5,
                                     ),
                                 itemCount: widget.movie.genres.length),
                           ),
@@ -149,19 +156,18 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
                           Text(
                             widget.movie.overview,
                             overflow: TextOverflow.ellipsis,
-                            maxLines: 7,
+                            maxLines: AppSize.s7.toInt(),
                           ),
                         ],
                       ),
                     ),
-                    //Text(movie.plot),
                   ],
                 ),
               ],
             ),
           ),
           myDivider(),
-          if (widget.category == 'Coming soon')
+          if (widget.category == AppStrings.comingSoon)
             Padding(
               padding: const EdgeInsets.only(
                   bottom: AppPadding.p10,
@@ -172,11 +178,11 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.category,
+                    widget.category!,
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                   Text(
-                    'Release Date ${widget.movie.releaseDate}',
+                    '${AppStrings.releaseDate} ${widget.movie.releaseDate}',
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ],
@@ -186,15 +192,43 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
           const SizedBox(
             height: AppSize.s10,
           ),
-        if(profileProvider.model.bookMarks!.contains(widget.movie.id) == false)
-          Center(
-              child: defaultButton(
-                  function: () {},
-                  text: '+ Add to Watchlist',
-                  textColor: Colors.black,
-                  style: const TextStyle(color: Colors.black, fontSize: 18.0),
-                  background: ColorManager.yellow,
-                  width: 350)),
+          if (Provider.of<ProfileViewModel>(context)
+                  .model
+                  .bookMarks!
+                  .contains(widget.movie.id) ==
+              false)
+            Center(
+                child: defaultButton(
+                    function: () async {
+                      await profileProvider.getUserData();
+                      await homeProvider.updateBookMarkUser(
+                          bookMarks: widget.movie.id!,
+                          id: Provider.of<ProfileViewModel>(context,
+                                  listen: false)
+                              .model
+                              .id,
+                          context: context);
+                    },
+                    text: AppStrings.addToWatchlist,
+                    textColor: Colors.black,
+                    style: const TextStyle(
+                        color: Colors.black, fontSize: AppSize.s18),
+                    background: ColorManager.yellow,
+                    width: AppConstants.filmListHeight)),
+          if (Provider.of<ProfileViewModel>(context)
+                  .model
+                  .bookMarks!
+                  .contains(widget.movie.id) ==
+              true)
+            Center(
+                child: defaultButton(
+                    function: () {},
+                    text: AppStrings.addedToWatchlist,
+                    textColor: Colors.black,
+                    style: TextStyle(
+                        color: ColorManager.white, fontSize: AppSize.s18),
+                    background: ColorManager.grey,
+                    width: AppConstants.filmListHeight)),
         ],
       ),
     );

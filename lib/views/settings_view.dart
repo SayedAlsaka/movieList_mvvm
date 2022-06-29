@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mvvm_demo/resources/strings_manager.dart';
 import 'package:mvvm_demo/resources/values_manager.dart';
 import 'package:mvvm_demo/view_model/app_view_model.dart';
+import 'package:mvvm_demo/view_model/search_view_model.dart';
 import 'package:mvvm_demo/view_model/settings_view_model.dart';
 import 'package:mvvm_demo/views/login_view.dart';
 import 'package:mvvm_demo/views/register_view.dart';
@@ -59,7 +60,7 @@ class SettingsView extends StatelessWidget {
                     width: MediaQuery.of(context).size.width / 3,
                     shape: Border.all(color: Colors.grey),
                     function: () {
-                      CashHelper.removeDate(key: 'uId');
+                      CashHelper.removeData(key: 'uId');
                       navigateAndFinish(context, LoginView());
                     },
                     text: AppStrings.signOutButton.toUpperCase()),
@@ -77,9 +78,9 @@ class SettingsView extends StatelessWidget {
                       if(provider.errorMessage == '')
                         {
                           appProvider.changeIsLoading(true);
-                          CashHelper.removeDate(key: 'uId');
+                          CashHelper.removeData(key: 'uId');
                           ScaffoldMessenger.of(context).showSnackBar(snackBar(
-                              msg: 'Deleted Successfully',
+                              msg: AppStrings.accountDeleted,
                               state: ToastStates.SUCCESS));
                           appProvider.changeIsLoading(false);
                           navigateAndFinish(context, LoginView());
@@ -93,9 +94,14 @@ class SettingsView extends StatelessWidget {
                 defaultButton(
                     background: Theme.of(context).backgroundColor,
                     textColor: Colors.blue,
-                    width: 235,
+                    width: AppConstants.settingButtonWidth,
                     shape: Border.all(color: Colors.grey),
-                    function: () {},
+                    function: () {
+                       Provider.of<SearchViewModel>(context, listen: false).clearSearchHistory();
+                       ScaffoldMessenger.of(context).showSnackBar(snackBar(
+                           msg: AppStrings.searchRecordsDeleted,
+                           state: ToastStates.SUCCESS));
+                    },
                     text: AppStrings.deleteSearchRecords),
               const SizedBox(
                 height: AppSize.s20,
@@ -104,9 +110,15 @@ class SettingsView extends StatelessWidget {
                 defaultButton(
                     background: Theme.of(context).backgroundColor,
                     textColor: Colors.blue,
-                    width: 235,
+                    width: AppConstants.settingButtonWidth,
                     shape: Border.all(color: Colors.grey),
-                    function: () {},
+                    function: () async{
+                      await provider.deleteBookMarks(id: AppConstants.uId,context: context);
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar(
+                          msg: AppStrings.bookmarkRecordsDeleted,
+                          state: ToastStates.SUCCESS));
+                      appProvider.changeIsLoading(false);
+                    },
                     text: AppStrings.deleteBookmarkRecords),
             ],
           ),

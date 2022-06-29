@@ -13,10 +13,10 @@ class ProfileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var profileProvider = Provider.of<ProfileViewModel>(context, listen: false);
-    var homeProvider = Provider.of<HomeViewModel>(context, listen: false);
     return SafeArea(
       child: Scaffold(
         body: RefreshIndicator(
+          color: ColorManager.yellow,
           onRefresh: () {
             profileProvider.getUserData();
             return Future.delayed(const Duration(seconds: 1));
@@ -47,7 +47,8 @@ class ProfileView extends StatelessWidget {
                                       decoration: BoxDecoration(
                                         image: DecorationImage(
                                           image: NetworkImage(
-                                            Provider.of<ProfileViewModel>(context)
+                                            Provider.of<ProfileViewModel>(
+                                                    context)
                                                 .model
                                                 .image!,
                                           ),
@@ -68,7 +69,8 @@ class ProfileView extends StatelessWidget {
                                         child: CircleAvatar(
                                           radius: 60.0,
                                           backgroundImage: NetworkImage(
-                                            Provider.of<ProfileViewModel>(context)
+                                            Provider.of<ProfileViewModel>(
+                                                    context)
                                                 .model
                                                 .image!,
                                           ),
@@ -81,7 +83,9 @@ class ProfileView extends StatelessWidget {
                             ),
                             const SizedBox(height: 40),
                             Text(
-                              Provider.of<ProfileViewModel>(context).model.name!,
+                              Provider.of<ProfileViewModel>(context)
+                                  .model
+                                  .name!,
                               style: Theme.of(context).textTheme.bodyText1,
                             ),
                             Text(
@@ -100,15 +104,17 @@ class ProfileView extends StatelessWidget {
                   },
                 ),
                 FutureBuilder(
-                  future: profileProvider.getWatchList(profileProvider.model.bookMarks),
+                  future: profileProvider
+                      .getWatchList(profileProvider.model.bookMarks),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       return cardMovie(
-                        homeProvider: homeProvider,
-                        profileProvider: profileProvider,
+                        homeProvider: Provider.of<HomeViewModel>(context),
+                        profileProvider: Provider.of<ProfileViewModel>(context),
                         context: context,
                         cardTitle: AppStrings.watchList,
-                        movies: Provider.of<ProfileViewModel>(context).watchList,
+                        movies:
+                            Provider.of<ProfileViewModel>(context).watchList,
                       );
                     } else {
                       return SizedBox(

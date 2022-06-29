@@ -38,15 +38,15 @@ class Video {
 
   Video(
       {this.iso6391,
-        this.iso31661,
-        this.name,
-        this.key,
-        this.site,
-        this.size,
-        this.type,
-        this.official,
-        this.publishedAt,
-        this.id});
+      this.iso31661,
+      this.name,
+      this.key,
+      this.site,
+      this.size,
+      this.type,
+      this.official,
+      this.publishedAt,
+      this.id});
 
   Video.fromJson(Map<String, dynamic> json) {
     iso6391 = json['iso_639_1'];

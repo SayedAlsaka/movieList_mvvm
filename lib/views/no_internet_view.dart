@@ -3,7 +3,6 @@ import 'package:mvvm_demo/resources/colors_manager.dart';
 import 'package:mvvm_demo/resources/strings_manager.dart';
 import 'package:mvvm_demo/resources/values_manager.dart';
 
-
 class NoInternetView extends StatelessWidget {
   const NoInternetView({Key? key}) : super(key: key);
 
@@ -19,9 +18,18 @@ class NoInternetView extends StatelessWidget {
               children: [
                 Column(
                   children: [
-                    Icon(Icons.error ,color: ColorManager.error,size: 50.0,),
-                    Text(AppStrings.noInternet , style: Theme.of(context).textTheme.bodyText1,),
-                    const SizedBox(height: AppSize.s30,),
+                    Icon(
+                      Icons.error,
+                      color: ColorManager.error,
+                      size: AppSize.s50,
+                    ),
+                    Text(
+                      AppStrings.noInternet,
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                    const SizedBox(
+                      height: AppSize.s30,
+                    ),
                     CircularProgressIndicator(color: ColorManager.error),
                   ],
                 ),

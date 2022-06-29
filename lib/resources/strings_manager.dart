@@ -24,10 +24,23 @@ class AppStrings {
   static const passwordValidate =
       r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
   static const noInternet = 'No Internet';
-  static const deleteAccount='Delete Account';
-  static const deleteSearchRecords='Delete search records';
-  static const deleteBookmarkRecords='Delete bookmark records';
-
+  static const deleteAccount = 'Delete Account';
+  static const deleteSearchRecords = 'Delete search records';
+  static const deleteBookmarkRecords = 'Delete bookmark records';
+  static const imagePath = 'https://image.tmdb.org/t/p/w780';
+  static const searchImagePath = 'https://image.tmdb.org/t/p/original';
+  static const releaseDate = 'Release Date';
+  static const addToWatchlist = '+ Add to Watchlist';
+  static const addedToWatchlist = 'Added to Watchlist';
+  static const clear = 'CLEAR';
+  static const searchWidgetText = 'Movie or Series Name';
+  static const homeView = 'Home';
+  static const searchView = 'Search';
+  static const profileView = 'You';
+  static const settingsView = 'Settings';
+  static const accountDeleted = 'Account Deleted Successfully';
+  static const searchRecordsDeleted = 'Search records Deleted Successfully';
+  static const bookmarkRecordsDeleted = 'Bookmark Deleted Successfully';
 }
 
 class AppErrorMessages {

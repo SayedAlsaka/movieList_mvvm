@@ -11,7 +11,7 @@ import '../resources/constants_manager.dart';
 class HomeViewModel extends ChangeNotifier {
   List<Movies> upComingList = [];
   List<MoviesResults> theaterList = [];
-List<MovieModel> watchList = [];
+  List<MovieModel> watchList = [];
   bool bookMark = false;
 
   Future<void> getUpComingMovies() async {
@@ -24,14 +24,9 @@ List<MovieModel> watchList = [];
     notifyListeners();
   }
 
-  void addToBookMark() {
+  void addToBookMark() {}
 
-  }
-
-  void removeFromBookMark() {
-
-  }
-
+  void removeFromBookMark() {}
 
   Future<void> updateBookMarkUser({
     required bookMarks,
@@ -66,14 +61,11 @@ List<MovieModel> watchList = [];
         FirebaseFirestore.instance
             .collection(AppConstants.userCollection)
             .doc(id)
-            .update({'bookMarks': FieldValue.arrayRemove(x)})
-            .then((value) {
+            .update({'bookMarks': FieldValue.arrayRemove(x)}).then((value) {
           Provider.of<ProfileViewModel>(context, listen: false).getUserData();
           bookMark = false;
-        })
-            .catchError((error) {});
+        }).catchError((error) {});
       }
-
     });
     notifyListeners();
   }

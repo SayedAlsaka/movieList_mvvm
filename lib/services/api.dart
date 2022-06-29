@@ -5,7 +5,6 @@ import 'package:mvvm_demo/models/search_model.dart';
 import 'package:mvvm_demo/models/theaters_model.dart';
 import 'package:mvvm_demo/models/up_coming_model.dart';
 import 'package:mvvm_demo/resources/constants_manager.dart';
-
 import '../models/video_model.dart';
 
 class HomeApi {
@@ -27,23 +26,25 @@ class HomeApi {
     List<MoviesResults> moviesList = theatersModel.results!;
     return moviesList;
   }
-
 }
 
 class SearchApi {
   late SearchModel searchModel;
-
+  List<SearchResults> movies = [];
   Future<List<SearchResults>> search(query) async {
-    await http.get(Uri.parse('https://api.themoviedb.org/3/search/movie?api_key=${AppConstants.apiKey1}&language=en-US&query=$query&page=1&include_adult=false#')).then((value) {
+    await http
+        .get(Uri.parse(
+            'https://api.themoviedb.org/3/search/movie?api_key=${AppConstants.apiKey1}&language=en-US&query=$query&page=1&include_adult=false#'))
+        .then((value) {
       searchModel = SearchModel.fromJson(json.decode(value.body));
-      for(int i=0; i<searchModel.results!.length; i++)
-        {
-          print(searchModel.results![i].title);
+      movies = [];
+      for (int i = 0; i < searchModel.results!.length; i++) {
+        if (searchModel.results![i].posterPath != null) {
+          movies.add(searchModel.results![i]);
         }
-    }).catchError((error) {
-      print(error.toString());
-    });
-    List<SearchResults> movies = searchModel.results!;
+      }
+    }).catchError((error) {});
+
     return movies;
   }
 }

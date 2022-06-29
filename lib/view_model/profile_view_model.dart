@@ -8,18 +8,24 @@ import '../models/movie_model.dart';
 import '../services/api.dart';
 
 class ProfileViewModel extends ChangeNotifier {
-  late UserModel model ;
+  late UserModel model;
   late MovieModel movieModel;
-   List<MovieModel> watchList = [];
-  Future<void>getWatchList(moviesID) async
-  {
+  List<MovieModel> watchList = [];
+  Future<void> getWatchList(moviesID) async {
     watchList = [];
-    for(int i=0; i<moviesID.length; i++) {
+    for (int i = 0; i < moviesID.length; i++) {
       movieModel = await MovieApi().getMovieDetails(moviesID[i]);
       watchList.add(movieModel);
     }
     notifyListeners();
   }
+
+  Future<void> removeWatchList(moviesID) async {
+    movieModel = await MovieApi().getMovieDetails(moviesID);
+    watchList.removeWhere((element) => element.id == movieModel.id);
+    notifyListeners();
+  }
+
   Future<void> getUserData() async {
     AppConstants.uId = CashHelper.getData(key: 'uId');
     await FirebaseFirestore.instance
@@ -29,7 +35,6 @@ class ProfileViewModel extends ChangeNotifier {
         .then((value) {
       model = UserModel.fromJson(value.data()!);
       notifyListeners();
-    }).catchError((error) {
-    });
+    }).catchError((error) {});
   }
 }

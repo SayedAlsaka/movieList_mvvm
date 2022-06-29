@@ -9,7 +9,6 @@ import 'package:mvvm_demo/view_model/app_view_model.dart';
 import 'package:mvvm_demo/view_model/register_view_model.dart';
 import 'package:mvvm_demo/views/login_view.dart';
 import 'package:provider/provider.dart';
-
 import '../resources/colors_manager.dart';
 
 class RegisterView extends StatelessWidget {

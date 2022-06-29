@@ -21,7 +21,6 @@ class HomeView extends StatelessWidget {
     var movieProvider =
         Provider.of<MovieDetailsViewModel>(context, listen: false);
     var profileProvider = Provider.of<ProfileViewModel>(context, listen: false);
-    profileProvider.getUserData();
     return SafeArea(
       child: Scaffold(
         body: RefreshIndicator(
@@ -132,12 +131,48 @@ class HomeView extends StatelessWidget {
                                                   ),
                                                 ),
                                               ),
-                                              if (profileProvider.model.bookMarks!.isEmpty)
-                                                bookMarkLogoAdd(profileProvider: profileProvider, provider: provider, item: item, context: context),
-                                              if (Provider.of<ProfileViewModel>(context).model.bookMarks!.isNotEmpty && Provider.of<ProfileViewModel>(context).model.bookMarks!.contains(item.id) == false)
-                                                bookMarkLogoAdd(profileProvider: profileProvider, provider: provider, item: item, context: context),
-                                              if (Provider.of<ProfileViewModel>(context).model.bookMarks!.isNotEmpty && Provider.of<ProfileViewModel>(context).model.bookMarks!.contains(item.id) == true)
-                                                bookMarkLogoRemove(profileProvider: profileProvider, provider: provider, item: item, context: context),
+                                              if (profileProvider
+                                                  .model.bookMarks!.isEmpty)
+                                                bookMarkLogoAdd(
+                                                    profileProvider:
+                                                        profileProvider,
+                                                    provider: provider,
+                                                    item: item,
+                                                    context: context),
+                                              if (Provider.of<ProfileViewModel>(
+                                                          context)
+                                                      .model
+                                                      .bookMarks!
+                                                      .isNotEmpty &&
+                                                  Provider.of<ProfileViewModel>(
+                                                              context)
+                                                          .model
+                                                          .bookMarks!
+                                                          .contains(item.id) ==
+                                                      false)
+                                                bookMarkLogoAdd(
+                                                    profileProvider:
+                                                        profileProvider,
+                                                    provider: provider,
+                                                    item: item,
+                                                    context: context),
+                                              if (Provider.of<ProfileViewModel>(
+                                                          context)
+                                                      .model
+                                                      .bookMarks!
+                                                      .isNotEmpty &&
+                                                  Provider.of<ProfileViewModel>(
+                                                              context)
+                                                          .model
+                                                          .bookMarks!
+                                                          .contains(item.id) ==
+                                                      true)
+                                                bookMarkLogoRemove(
+                                                    profileProvider:
+                                                        profileProvider,
+                                                    provider: provider,
+                                                    item: item,
+                                                    context: context),
                                             ],
                                           ),
                                         ),

@@ -48,19 +48,19 @@ class SearchResults {
 
   SearchResults(
       {this.adult,
-        this.backdropPath,
-        this.genreIds,
-        this.id,
-        this.originalLanguage,
-        this.originalTitle,
-        this.overview,
-        this.popularity,
-        this.posterPath,
-        this.releaseDate,
-        this.title,
-        this.video,
-        this.voteAverage,
-        this.voteCount});
+      this.backdropPath,
+      this.genreIds,
+      this.id,
+      this.originalLanguage,
+      this.originalTitle,
+      this.overview,
+      this.popularity,
+      this.posterPath,
+      this.releaseDate,
+      this.title,
+      this.video,
+      this.voteAverage,
+      this.voteCount});
 
   SearchResults.fromJson(Map<String, dynamic> json) {
     adult = json['adult'];
@@ -78,7 +78,21 @@ class SearchResults {
     voteAverage = json['vote_average'];
     voteCount = json['vote_count'];
   }
-
+  static Map<String, dynamic> toMap(SearchResults music) => {
+        'adult': music.adult,
+        'backdrop_path': music.backdropPath,
+        'genre_ids': music.genreIds,
+        'id': music.id,
+        'original_language': music.originalLanguage,
+        'original_title': music.originalTitle,
+        'overview': music.overview,
+        'popularity': music.popularity,
+        'poster_path': music.posterPath,
+        'release_date': music.releaseDate,
+        'title': music.title,
+        'vote_average': music.voteAverage,
+        'vote_count': music.voteCount,
+      };
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['adult'] = this.adult;
@@ -98,4 +112,3 @@ class SearchResults {
     return data;
   }
 }
-

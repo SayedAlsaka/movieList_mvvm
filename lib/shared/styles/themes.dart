@@ -1,20 +1,16 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:mvvm_demo/resources/colors_manager.dart';
 
-
 ThemeData darkTheme = ThemeData(
-  cursorColor: ColorManager.white,
   scaffoldBackgroundColor: HexColor('242424'),
-backgroundColor: Colors.black,
-
-  cardTheme:  CardTheme(
+  backgroundColor: Colors.black,
+  cardTheme: CardTheme(
     color: HexColor('242424'),
   ),
-  appBarTheme:  AppBarTheme(
-    color: HexColor('00000027'),
+  appBarTheme: AppBarTheme(
+      color: HexColor('00000027'),
       titleSpacing: 20.0,
       systemOverlayStyle: SystemUiOverlayStyle(
         statusBarColor: HexColor('242424'),
@@ -28,11 +24,8 @@ backgroundColor: Colors.black,
         color: Colors.white,
         fontSize: 20.0,
         fontWeight: FontWeight.bold,
-      )
-
-
-  ),
-  iconTheme:IconThemeData(color: ColorManager.yellow),
+      )),
+  iconTheme: IconThemeData(color: ColorManager.yellow),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
     type: BottomNavigationBarType.fixed,
     selectedItemColor: ColorManager.yellow,
@@ -40,33 +33,28 @@ backgroundColor: Colors.black,
     elevation: 20.0,
     backgroundColor: HexColor('242424'),
   ),
-  textTheme:  TextTheme(
-    headline4: TextStyle(
-      color: Colors.white
-    ),
+  textTheme: const TextTheme(
+    headline4: TextStyle(color: Colors.white),
     bodyText1: TextStyle(
       fontSize: 25.0,
       fontWeight: FontWeight.w500,
       color: Colors.white,
     ),
-    bodyText2:TextStyle(
+    bodyText2: TextStyle(
       fontSize: 15.0,
       color: Colors.white,
     ),
     subtitle1: TextStyle(
       fontSize: 15.0,
       color: Colors.white,
-     // height: 1.3,
+      // height: 1.3,
     ),
   ),
   primarySwatch: Colors.yellow,
-
 );
 
-
 ThemeData lightTheme = ThemeData(
-  cursorColor: ColorManager.black,
-  cardColor:Colors.white,
+  cardColor: Colors.white,
   backgroundColor: Colors.white,
   scaffoldBackgroundColor: Colors.white,
   appBarTheme: const AppBarTheme(
@@ -89,18 +77,18 @@ ThemeData lightTheme = ThemeData(
     type: BottomNavigationBarType.fixed,
     selectedItemColor: Colors.black,
   ),
-  textTheme:  TextTheme(
-    headline4:  TextStyle(
-        color: ColorManager.black,
+  textTheme: TextTheme(
+    headline4: TextStyle(
+      color: ColorManager.black,
     ),
     bodyText1: TextStyle(
       fontSize: 25.0,
       fontWeight: FontWeight.w500,
       color: ColorManager.black,
     ),
-    bodyText2:TextStyle(
+    bodyText2: TextStyle(
       fontSize: 15.0,
-      color:ColorManager.black,
+      color: ColorManager.black,
     ),
     subtitle1: TextStyle(
       fontSize: 16.0,
@@ -108,4 +96,3 @@ ThemeData lightTheme = ThemeData(
     ),
   ),
 );
-

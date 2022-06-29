@@ -41,9 +41,9 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SettingsViewModel()),
         ChangeNotifierProvider(create: (_) => RegisterViewModel()),
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
-        ChangeNotifierProvider(create: (_) => ProfileViewModel()),
+        ChangeNotifierProvider(create: (_) => ProfileViewModel()..getUserData()),
         ChangeNotifierProvider(create: (_) => AppViewModel()),
-        ChangeNotifierProvider(create: (_) => SearchViewModel()),
+        ChangeNotifierProvider(create: (_) => SearchViewModel()..getSearchHistory()),
         ChangeNotifierProvider(create: (_) => MovieDetailsViewModel()),
       ],
       child: MyApp(

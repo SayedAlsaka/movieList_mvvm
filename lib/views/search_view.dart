@@ -1,13 +1,16 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:mvvm_demo/services/api.dart';
+import 'package:mvvm_demo/resources/strings_manager.dart';
+import 'package:mvvm_demo/resources/values_manager.dart';
 import 'package:mvvm_demo/view_model/search_view_model.dart';
 import 'package:mvvm_demo/views/search_widget.dart';
 import 'package:provider/provider.dart';
-
 import '../models/search_model.dart';
 import '../resources/colors_manager.dart';
+import '../resources/constants_manager.dart';
+import '../shared/components.dart';
+import '../view_model/movie_details_view_model.dart';
+import 'movie_details_view.dart';
 
 class SearchView extends StatefulWidget {
   const SearchView({Key? key}) : super(key: key);
@@ -17,36 +20,83 @@ class SearchView extends StatefulWidget {
 }
 
 class _SearchViewState extends State<SearchView> {
-  List<SearchResults> movies=[];
+  List<SearchResults> movies = [];
+  late Future search;
   String query = '';
-  Timer? debouncer;
+
   @override
   Widget build(BuildContext context) {
+    var searchProvider = Provider.of<SearchViewModel>(context, listen: false);
+    var movieProvider =
+        Provider.of<MovieDetailsViewModel>(context, listen: false);
     return Scaffold(
-      body:  Column(
-        children:<Widget>[
+      body: Column(
+        children: <Widget>[
           buildSearch(),
-          if(query !='')
+          if (query != '')
             FutureBuilder(
-              future: Provider.of<SearchViewModel>(context,listen: false).search(query),
-              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                if(snapshot.connectionState == ConnectionState.done)
-                {
+              future: search,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
                   return Expanded(
                     child: ListView.builder(
-                      itemCount: Provider.of<SearchViewModel>(context).resultsList.length,
+                      itemCount: Provider.of<SearchViewModel>(context)
+                          .resultsList
+                          .length,
                       itemBuilder: (context, index) {
-                        return buildBook(Provider.of<SearchViewModel>(context).resultsList[index]);
+                        return buildMovie(
+                            Provider.of<SearchViewModel>(context)
+                                .resultsList[index],
+                            movieProvider,
+                            searchProvider);
                       },
                     ),
                   );
-                }
-                else
-                {
-                  return const Center(child: CircularProgressIndicator());
+                } else {
+                  return Center(
+                      child: CircularProgressIndicator(
+                    color: ColorManager.yellow,
+                  ));
                 }
               },
-
+            ),
+          if (query == '' &&
+              Provider.of<SearchViewModel>(context)
+                  .recentSearchHistory
+                  .isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: AppPadding.p16, right: AppPadding.p8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(AppConstants.recentSearches),
+                  defaultTextButton(
+                      function: () {
+                        searchProvider.clearSearchHistory();
+                      },
+                      text: AppStrings.clear,
+                      color: Colors.blue),
+                ],
+              ),
+            ),
+          if (query == '' &&
+              Provider.of<SearchViewModel>(context)
+                  .recentSearchHistory
+                  .isNotEmpty)
+            Expanded(
+              child: ListView.builder(
+                itemCount: Provider.of<SearchViewModel>(context)
+                    .recentSearchHistory
+                    .length,
+                itemBuilder: (context, index) {
+                  return buildMovie(
+                      Provider.of<SearchViewModel>(context)
+                          .recentSearchHistory[index],
+                      movieProvider,
+                      searchProvider);
+                },
+              ),
             ),
         ],
       ),
@@ -54,151 +104,41 @@ class _SearchViewState extends State<SearchView> {
   }
 
   Widget buildSearch() => SearchWidget(
-    text: query,
-    hintText: 'Movie or Series Name',
-    onChanged: searchBook,
-  );
-  Future searchBook(String query) async {
-    final movies = await SearchApi().search(query);
-
+        text: query,
+        hintText: AppStrings.searchWidgetText,
+        onChanged: searchMovie,
+      );
+  Future searchMovie(String query) async {
+    await Provider.of<SearchViewModel>(context, listen: false).search(query);
     setState(() {
       this.query = query;
-      this.movies = movies;
+      movies = Provider.of<SearchViewModel>(context, listen: false).resultsList;
+      search =
+          Provider.of<SearchViewModel>(context, listen: false).search(query);
     });
   }
-  Widget buildBook(SearchResults movie) => ListTile(
-    leading: Image.network(
-      movie.posterPath!,
-      fit: BoxFit.cover,
-      width: 50,
-      height: 80,
-    ),
-    title: Text(movie.title!),
-    subtitle: Text(movie.releaseDate!,style: TextStyle(color: ColorManager.grey ),),
-  );
+
+  Widget buildMovie(SearchResults movie, movieProvider, searchProvider) =>
+      ListTile(
+        onTap: () async {
+          await movieProvider.getMovieDetails(movie.id);
+          await movieProvider.getVideoID(movie.id);
+          searchProvider.setSearchHistory(movie);
+          navigatePush(
+              context,
+              MovieDetailsView(
+                  movie: movieProvider.movieModel, id: movieProvider.videoID));
+        },
+        leading: Image.network(
+          '${AppStrings.searchImagePath}${movie.posterPath}',
+          fit: BoxFit.cover,
+          width: AppSize.s50,
+          height: AppSize.s80,
+        ),
+        title: Text(movie.title!),
+        subtitle: Text(
+          movie.releaseDate!,
+          style: TextStyle(color: ColorManager.grey),
+        ),
+      );
 }
-
-
-
-
-
-
-
-
-// import 'dart:async';
-// import 'package:flutter/material.dart';
-// import 'package:mvvm_demo/views/search_widget.dart';
-//
-// import '../models/model.dart';
-// import '../services/book_api.dart';
-//
-// class SearchView extends StatefulWidget {
-//   @override
-//   SearchViewState createState() => SearchViewState();
-// }
-//
-// class SearchViewState extends State<SearchView> {
-//   List<Book> books = [];
-//   String query = '';
-//   Timer? debouncer;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//
-//     init();
-//   }
-//
-//   @override
-//   void dispose() {
-//     debouncer?.cancel();
-//     super.dispose();
-//   }
-//
-//   void debounce(
-//       VoidCallback callback, {
-//         Duration duration = const Duration(milliseconds: 1000),
-//       }) {
-//     if (debouncer != null) {
-//       debouncer!.cancel();
-//     }
-//
-//     debouncer = Timer(duration, callback);
-//   }
-//
-//   Future init() async {
-//     final books = await BooksApi.getBooks(query);
-//
-//     setState(() => this.books = books);
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) => Scaffold(
-//     body: Column(
-//       children: <Widget>[
-//         buildSearch(),
-//         if(query !='')
-//           Expanded(
-//           child: ListView.builder(
-//             itemCount: books.length,
-//             itemBuilder: (context, index) {
-//               final book = books[index];
-//
-//               return buildBook(book);
-//             },
-//           ),
-//         ),
-//       ],
-//     ),
-//   );
-//
-//   Widget buildSearch() => SearchWidget(
-//     text: query,
-//     hintText: 'Title or Author Name',
-//     onChanged: searchBook,
-//   );
-//
-//   Future searchBook(String query) async => debounce(() async {
-//     final books = await BooksApi.getBooks(query);
-//
-//     if (!mounted) return;
-//
-//     setState(() {
-//       this.query = query;
-//       this.books = books;
-//     });
-//   });
-//
-//   Widget buildBook(Book book) => ListTile(
-//     leading: Image.network(
-//       book.urlImage,
-//       fit: BoxFit.cover,
-//       width: 50,
-//       height: 50,
-//     ),
-//     title: Text(book.title),
-//     subtitle: Text(book.author),
-//   );
-// }
-
-// import 'package:flutter/material.dart';
-// import 'package:mvvm_demo/view_model/search_view_model.dart';
-// import 'package:provider/provider.dart';
-//
-// class SearchView extends StatelessWidget {
-//   const SearchView({Key? key}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     var searchProvider = Provider.of<SearchViewModel>(context, listen: false);
-//     return Scaffold(
-//       body: Column(
-//         children: [
-//           Center(child: TextButton(onPressed: (){
-//             searchProvider.search();
-//           }, child: Text('go'))),
-//         ],
-//       ),
-//     );
-//   }
-// }

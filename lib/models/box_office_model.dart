@@ -35,12 +35,12 @@ class Items {
 
   Items(
       {this.id,
-        this.rank,
-        this.title,
-        this.image,
-        this.weekend,
-        this.gross,
-        this.weeks});
+      this.rank,
+      this.title,
+      this.image,
+      this.weekend,
+      this.gross,
+      this.weeks});
 
   Items.fromJson(Map<String, dynamic> json) {
     id = json['id'];

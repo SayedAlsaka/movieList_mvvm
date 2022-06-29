@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mvvm_demo/resources/colors_manager.dart';
+import 'package:mvvm_demo/resources/values_manager.dart';
 
 class SearchWidget extends StatefulWidget {
   final String text;
@@ -22,19 +23,20 @@ class _SearchWidgetState extends State<SearchWidget> {
 
   @override
   Widget build(BuildContext context) {
-    const styleActive = TextStyle(color: Colors.black);
-    const styleHint = TextStyle(color: Colors.black);
+    var styleActive = TextStyle(color:ColorManager.black);
+    var styleHint =  TextStyle(color:ColorManager.black);
     final style = widget.text.isEmpty ? styleHint : styleActive;
 
     return Container(
-      height: 42,
-      margin: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+      height: AppSize.s40,
+      margin: const EdgeInsets.fromLTRB(
+          AppSize.s16, AppSize.s16, AppSize.s16, AppSize.s16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppSize.s12),
+        color: ColorManager.white,
         border: Border.all(color: Colors.black26),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: AppPadding.p8),
       child: TextField(
         cursorColor: ColorManager.yellow,
         controller: controller,
@@ -54,7 +56,7 @@ class _SearchWidgetState extends State<SearchWidget> {
           hintStyle: style,
           border: InputBorder.none,
         ),
-        style: const TextStyle(color: Colors.black,fontSize: 16.0),
+        style:  TextStyle(color: ColorManager.black, fontSize: AppSize.s16),
         onChanged: widget.onChanged,
       ),
     );

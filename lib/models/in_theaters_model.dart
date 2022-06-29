@@ -44,27 +44,26 @@ class ItemsT {
   List<DirectorList>? directorList;
   String? stars;
 
-
-  ItemsT(
-      {this.id,
-        this.title,
-        this.fullTitle,
-        this.year,
-        this.releaseState,
-        this.image,
-        this.runtimeMins,
-        this.runtimeStr,
-        this.plot,
-        this.contentRating,
-        this.imDbRating,
-        this.imDbRatingCount,
-        this.metacriticRating,
-        this.genres,
-        this.genreList,
-        this.directors,
-        this.directorList,
-        this.stars,
-       });
+  ItemsT({
+    this.id,
+    this.title,
+    this.fullTitle,
+    this.year,
+    this.releaseState,
+    this.image,
+    this.runtimeMins,
+    this.runtimeStr,
+    this.plot,
+    this.contentRating,
+    this.imDbRating,
+    this.imDbRatingCount,
+    this.metacriticRating,
+    this.genres,
+    this.genreList,
+    this.directors,
+    this.directorList,
+    this.stars,
+  });
 
   ItemsT.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -95,7 +94,6 @@ class ItemsT {
       });
     }
     stars = json['stars'];
-
   }
 
   Map<String, dynamic> toJson() {
